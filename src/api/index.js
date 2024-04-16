@@ -1,7 +1,7 @@
 import axios from "axios";
 
-const key = "AIzaSyApxOkxvIY3ku0_sHE2JSHLOhBhbFuhxbU";
 const getPlayList = async (playlistId, pageToken = "", result = []) => {
+  const key = import.meta.env.VITE_YOUTUBE_API_KEY;
   const URL = `https://youtube.googleapis.com/youtube/v3/playlistItems?part=id%2CcontentDetails%2Csnippet&playlistId=${playlistId}&pageToken=${pageToken}&key=${key}`;
 
   try {
