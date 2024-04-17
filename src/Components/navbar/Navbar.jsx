@@ -8,8 +8,9 @@ import {
   Typography,
 } from "@mui/material";
 import { useState } from "react";
+import PlaylistForm from "../playlistForm/PlaylistForm";
 
-const Navbar = () => {
+const Navbar = ({ getPlaylistById }) => {
   const [open, setOpen] = useState(false);
 
   const handleClickOpen = () => {
@@ -17,6 +18,10 @@ const Navbar = () => {
   };
   const handleClose = () => {
     setOpen(false);
+  };
+
+  const getPlaylistId = (id) => {
+    getPlaylistById(id);
   };
   return (
     <Box sx={{ flexGrow: 1 }}>
@@ -27,7 +32,14 @@ const Navbar = () => {
               <Typography variant="h4">Youtube Projcet</Typography>
               <Typography variant="body1">By Stack Learner</Typography>
             </Stack>
-            <Button variant={"contained"}>Add Playlist</Button>
+            <Button variant={"contained"} onClick={handleClickOpen}>
+              Add Playlist
+            </Button>
+            <PlaylistForm
+              handleClose={handleClose}
+              open={open}
+              getPlaylistId={getPlaylistId}
+            />
           </Toolbar>
         </Container>
       </AppBar>

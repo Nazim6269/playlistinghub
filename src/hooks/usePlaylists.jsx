@@ -17,50 +17,23 @@ const usePlaylists = () => {
     }
 
     setIsLoading(true);
-    let result;
+
     try {
-      result = await getPlayList(playlistId);
+      const playlist = await getPlayList(playlistId);
+      console.log("playlist", playlist);
       setError("");
+      setState((prev) => ({
+        ...prev,
+        playlists: {
+          ...prev.playlists,
+          [playlistId]: playlist,
+        },
+      }));
     } catch (error) {
       setError(error.response?.data?.error?.message || "Something went wrong");
     } finally {
       setIsLoading(false);
     }
-
-    let cid, ct;
-
-    result = result.map((item) => {
-      const {
-        channelId,
-        title,
-        description,
-        thumbnails: { medium },
-        channelTitle,
-      } = item.snippet;
-
-      if (!cid) {
-        cid = channelId;
-      }
-
-      if (!ct) {
-        ct = channelTitle;
-      }
-
-      return {
-        title,
-        description,
-        thumbnail: medium,
-        contentDetails: item.contentDetails,
-      };
-    });
-
-    setState((prev) => ({
-      ...prev,
-      playlists: {
-        ...prev.playlists,
-        [playlistId]: result,
-      },
-    }));
   };
 
   const addToFavorites = (playlistId) => {

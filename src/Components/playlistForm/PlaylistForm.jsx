@@ -1,15 +1,27 @@
-import { DialogContentText, TextField } from "@mui/material";
 import Button from "@mui/material/Button";
 import Dialog from "@mui/material/Dialog";
 import DialogActions from "@mui/material/DialogActions";
 import DialogContent from "@mui/material/DialogContent";
+import DialogContentText from "@mui/material/DialogContentText";
 import DialogTitle from "@mui/material/DialogTitle";
+import TextField from "@mui/material/TextField";
 import { useState } from "react";
 
-const PlaylistForm = ({ open, handleClose }) => {
+const PlaylistForm = ({ open, handleClose, getPlaylistId }) => {
   const [state, setState] = useState("");
+
+  const handleSubmit = () => {
+    if (!state) {
+      alert("Invalid id");
+    } else {
+      getPlaylistId(state);
+      setState("");
+      handleClose();
+    }
+  };
+
   return (
-    <Dialog open={open} onClick={handleClose}>
+    <Dialog open={open} onClose={handleClose}>
       <DialogTitle sx={{ m: 0, p: 2 }} id="customized-dialog-title">
         Add Plalist
       </DialogTitle>
@@ -22,8 +34,6 @@ const PlaylistForm = ({ open, handleClose }) => {
           autoFocus
           required
           margin="dense"
-          id="name"
-          name="email"
           label="Playlist id or Link"
           fullWidth
           variant="standard"
@@ -32,8 +42,10 @@ const PlaylistForm = ({ open, handleClose }) => {
       </DialogContent>
 
       <DialogActions>
-        <Button>Cancel</Button>
-        <Button type="submit">Add Plalist</Button>
+        <Button onClick={handleClose}>Cancel</Button>
+        <Button type="submit" onClick={handleSubmit}>
+          Add Plalist
+        </Button>
       </DialogActions>
     </Dialog>
   );
