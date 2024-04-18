@@ -20,7 +20,7 @@ const usePlaylists = () => {
 
     try {
       const playlist = await getPlayList(playlistId);
-      console.log("playlist", playlist);
+
       setError("");
       setState((prev) => ({
         ...prev,

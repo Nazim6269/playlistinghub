@@ -10,7 +10,7 @@ const getPlayListItem = async (playlistId, pageToken = "", result = []) => {
     result = [...result, ...data.items];
 
     if (data.nextPageToken) {
-      result = getPlayList(playlistId, data.nextPageToken, result);
+      result = getPlayListItem(playlistId, data.nextPageToken, result);
     }
     return result;
   } catch (error) {
@@ -22,7 +22,7 @@ const getPlayList = async (playlistId) => {
   const URL = `https://youtube.googleapis.com/youtube/v3/playlists?part=snippet&id=${playlistId}&key=${key}`;
 
   const { data } = await axios.get(URL);
-  console.log("data", data);
+
   let playlistItems = await getPlayListItem(playlistId);
 
   const {
