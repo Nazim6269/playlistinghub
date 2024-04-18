@@ -1,34 +1,29 @@
-import { Container, Stack } from "@mui/material";
 import CssBaseline from "@mui/material/CssBaseline";
+import { BrowserRouter, Route, Routes } from "react-router-dom";
 import Navbar from "./Components/navbar/Navbar";
-import PlaylistCardItem from "./Components/playlistCardItem/PlaylistCardItem";
 import usePlaylists from "./hooks/usePlaylists";
+import Home from "./page/Home";
+import NotFound from "./page/NotFound";
+import YoutubePlayer from "./page/YoutubePlayer";
 
 const App = () => {
   const { getPlaylistById, playlists } = usePlaylists();
   const playlistArray = Object.values(playlists);
-  console.log(playlistArray);
 
   return (
     <>
       <CssBaseline />
-      <Container maxWidth={"lg"} sx={{ marginTop: 16 }}>
+      <BrowserRouter>
         <Navbar getPlaylistById={getPlaylistById} />
-        {playlistArray.length > 0 && (
-          <Stack direction={"row"} spacing={2}>
-            {playlistArray.map((item) => {
-              return (
-                <PlaylistCardItem
-                  key={item.id}
-                  playlistThumb={item.playlistThumb}
-                  playlistTitle={item.playlistTitle}
-                  channelTitle={item.channelTitle}
-                />
-              );
-            })}
-          </Stack>
-        )}
-      </Container>
+        <Routes>
+          <Route path="/" element={<Home playlistArray={playlistArray} />} />
+          <Route path="*" element={<NotFound />} />
+          <Route
+            path="/player/:playlistId"
+            element={<YoutubePlayer playlists={playlists} />}
+          />
+        </Routes>
+      </BrowserRouter>
     </>
   );
 };

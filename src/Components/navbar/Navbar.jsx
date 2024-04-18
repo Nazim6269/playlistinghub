@@ -3,11 +3,14 @@ import {
   Box,
   Button,
   Container,
+  Link,
   Stack,
   Toolbar,
   Typography,
 } from "@mui/material";
 import { useState } from "react";
+
+import { Link as RouterLink } from "react-router-dom";
 import PlaylistForm from "../playlistForm/PlaylistForm";
 
 const Navbar = ({ getPlaylistById }) => {
@@ -29,7 +32,13 @@ const Navbar = ({ getPlaylistById }) => {
         <Container maxWidth={"lg"}>
           <Toolbar>
             <Stack sx={{ flexGrow: 1 }}>
-              <Typography variant="h4">Youtube Projcet</Typography>
+              <Link
+                to={"/"}
+                component={RouterLink}
+                sx={{ textDecoration: "none", color: "black" }}
+              >
+                <Typography variant="h4">Youtube Projcet</Typography>
+              </Link>
               <Typography variant="body1">By Stack Learner</Typography>
             </Stack>
             <Button variant={"contained"} onClick={handleClickOpen}>

@@ -1,15 +1,32 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import getPlayList from "../api";
+import storage from "../utils/storage";
+
+const STORAGE_KEY = "yp__playlist__";
+const INIT_STATE = {
+  playlists: {},
+  recentPlaylists: [],
+  favorites: [],
+};
 
 const usePlaylists = () => {
-  const [state, setState] = useState({
-    playlists: {},
-    recentPlaylists: [],
-    favorites: [],
-  });
+  const [state, setState] = useState(INIT_STATE);
 
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
+
+  useEffect(() => {
+    const state = storage.get(STORAGE_KEY);
+    if (state) {
+      setState({ ...state });
+    }
+  }, []);
+
+  useEffect(() => {
+    if (state !== INIT_STATE) {
+      storage.save(STORAGE_KEY, state);
+    }
+  }, [state]);
 
   const getPlaylistById = async (playlistId, force = false) => {
     if (state.playlists[playlistId] && !force) {
