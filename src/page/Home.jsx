@@ -1,8 +1,16 @@
 import { Container, Grid } from "@mui/material";
-import React from "react";
+import { useStoreActions } from "easy-peasy";
+import React, { useEffect } from "react";
 import PlaylistCardItem from "../Components/playlistCardItem/PlaylistCardItem";
 
+const id = "PL_XxuZqN0xVD0op-QDEgyXFA4fRPChvkl";
 const Home = ({ playlistArray }) => {
+  const playlist = useStoreActions((actions) => actions.playlist);
+
+  useEffect(() => {
+    playlist.getPlaylistData(id);
+  }, []);
+
   return (
     <Container maxWidth={"lg"} sx={{ marginTop: 16 }}>
       {playlistArray.length > 0 && (
