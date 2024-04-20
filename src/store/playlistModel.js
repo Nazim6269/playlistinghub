@@ -21,14 +21,16 @@ const playlistModel = persist({
     if (helpars.getState().data[playlistId]) {
       return;
     }
-    setLoading(true);
+    actions.setLoading(true);
     try {
       const playlist = await getPlayList(playlistId);
       actions.addPlaylist(playlist);
     } catch (error) {
-      setError(error.response?.data?.error?.message || "Something went wrong");
+      actions.setError(
+        error.response?.data?.error?.message || "Something went wrong"
+      );
     } finally {
-      setLoading(false);
+      actions.setLoading(false);
     }
   }),
 });

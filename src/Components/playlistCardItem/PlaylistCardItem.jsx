@@ -1,4 +1,7 @@
-import { PlayCircleFilledOutlined } from "@mui/icons-material";
+import {
+  FavoriteBorderOutlined,
+  PlayCircleFilledOutlined,
+} from "@mui/icons-material";
 import { Box, Button, Stack } from "@mui/material";
 import Card from "@mui/material/Card";
 import CardActions from "@mui/material/CardActions";
@@ -47,6 +50,14 @@ const PlaylistCardItem = ({
             <PlayCircleFilledOutlined />
             <Typography variant="body2" fontWeight={600}>
               Start Tutorial
+            </Typography>
+          </Stack>
+        </Button>
+        <Button>
+          <Stack direction={"row"} alignItems={"center"} gap={1}>
+            <FavoriteBorderOutlined />
+            <Typography variant="body2" fontWeight={600}>
+              Add To Favorite
             </Typography>
           </Stack>
         </Button>
