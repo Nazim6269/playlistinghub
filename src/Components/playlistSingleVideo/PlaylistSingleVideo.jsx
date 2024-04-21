@@ -1,10 +1,11 @@
 import { CardMedia, Container, Link, Stack, Typography } from "@mui/material";
+import { useStoreState } from "easy-peasy";
 import React from "react";
 import { Link as RouterLink } from "react-router-dom";
 
-const PlaylistSingleVedio = ({ url, title, channelTitle, videoId }) => {
+const PlaylistSingleVideo = ({ url, title, channelTitle, videoId }) => {
   return (
-    <Container sx={{ marginY: 2 }}>
+    <Container sx={{ marginBottom: 2 }}>
       <Stack direction="row">
         <Link to={`${videoId}`} component={RouterLink}>
           <CardMedia
@@ -24,4 +25,4 @@ const PlaylistSingleVedio = ({ url, title, channelTitle, videoId }) => {
   );
 };
 
-export default PlaylistSingleVedio;
+export default PlaylistSingleVideo;

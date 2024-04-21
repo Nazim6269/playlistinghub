@@ -5,6 +5,7 @@ const playlistModel = persist({
   data: {},
   error: "",
   isLoading: false,
+  //actions are here
   addPlaylist: action((state, payload) => {
     state.data[payload.playlistId] = payload;
   }),
@@ -17,14 +18,16 @@ const playlistModel = persist({
     state.error = payload;
   }),
 
-  getPlaylistData: thunk(async (actions, playlistId, helpars) => {
-    if (helpars.getState().data[playlistId]) {
+  //thunk are here
+  getPlaylistData: thunk(async (actions, playlistId, helpers) => {
+    if (helpers.getState().data[playlistId]) {
       return;
     }
     actions.setLoading(true);
     try {
       const playlist = await getPlayList(playlistId);
       actions.addPlaylist(playlist);
+      console.log("playlistModel");
     } catch (error) {
       actions.setError(
         error.response?.data?.error?.message || "Something went wrong"

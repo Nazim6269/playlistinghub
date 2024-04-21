@@ -1,11 +1,17 @@
 import { CardMedia, Container, Typography } from "@mui/material";
-import React from "react";
+import React, { useEffect } from "react";
 import { useParams } from "react-router-dom";
-import PlaylistSingleVedio from "../Components/playlistSingleVedio/PlaylistSingleVedio";
+import PlaylistSingleVideo from "../Components/playlistSingleVideo/PlaylistSingleVideo";
+import { useStoreActions } from "easy-peasy";
 
 const VideoPlaylist = ({ playlists }) => {
   const { playlistId } = useParams();
   const current = playlists[playlistId];
+  // const playlist = useStoreActions((actions) => actions.playlists);
+
+  // useEffect(() => {
+  //   playlist.getPlaylistData(playlistId);
+  // }, []);
 
   if (!current) return;
 
@@ -24,7 +30,7 @@ const VideoPlaylist = ({ playlists }) => {
 
         return (
           <div key={item.contentDetails.videoId}>
-            <PlaylistSingleVedio
+            <PlaylistSingleVideo
               key={item.contentDetails.videoId}
               url={thumbnail.url}
               title={title}

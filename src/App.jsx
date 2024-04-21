@@ -9,6 +9,7 @@ import VideoPlaylist from "./page/VideoPlaylist";
 
 const App = () => {
   const { getPlaylistById, playlists } = usePlaylists();
+
   const playlistArray = Object.values(playlists);
 
   return (
@@ -23,7 +24,7 @@ const App = () => {
             path="/player/:playlistId"
             element={<VideoPlaylist playlists={playlists} />}
           />
-          <Route path="player/:playlistId/:videoId" element={<PlayVideo />} />
+          <Route path="/player/:playlistId/:videoId" element={<PlayVideo />} />
         </Routes>
       </BrowserRouter>
     </>

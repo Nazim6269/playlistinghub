@@ -37,7 +37,7 @@ const Navbar = ({ getPlaylistById }) => {
                 component={RouterLink}
                 sx={{ textDecoration: "none", color: "black" }}
               >
-                <Typography variant="h4">Youtube Projcet</Typography>
+                <Typography variant="h4">Clean YouTube</Typography>
               </Link>
               <Typography variant="body1">By Stack Learner</Typography>
             </Stack>

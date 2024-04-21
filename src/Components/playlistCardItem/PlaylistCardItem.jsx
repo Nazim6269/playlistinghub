@@ -23,6 +23,7 @@ const PlaylistCardItem = ({
         display: "flex",
         flexDirection: "column",
         margin: 1,
+        width: 280,
       }}
     >
       <CardMedia
@@ -39,7 +40,7 @@ const PlaylistCardItem = ({
               : playlistTitle
           }`}
         </Typography>
-        <Typography variant="h5" color="text.secondary">
+        <Typography variant="body1" color="text.secondary">
           {channelTitle}
         </Typography>
       </CardContent>
