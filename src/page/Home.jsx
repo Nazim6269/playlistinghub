@@ -1,6 +1,5 @@
 import { Container, Grid } from "@mui/material";
-import { useStoreActions } from "easy-peasy";
-import React, { useEffect } from "react";
+import React from "react";
 import PlaylistCardItem from "../Components/playlistCardItem/PlaylistCardItem";
 
 const id = "PL_XxuZqN0xVD0op-QDEgyXFA4fRPChvkl";

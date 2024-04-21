@@ -12,6 +12,10 @@ const PlayVideo = () => {
   const playlist = useStoreActions((actions) => actions.playlists);
   const { data, loading } = useStoreState((state) => state.playlists);
 
+  useEffect(() => {
+    playlist.getPlaylistData(playlistId);
+  }, [playlist, playlistId]);
+
   if (loading || !data[playlistId]) {
     return <div>Loading...</div>;
   }
@@ -25,10 +29,6 @@ const PlayVideo = () => {
   if (!filteredItem || filteredItem.length === 0) {
     return <div>Loading...</div>;
   }
-
-  useEffect(() => {
-    playlist.getPlaylistData(playlistId);
-  }, [playlist, playlistId]);
 
   const width = 1080;
   const height = (9 / 16) * width;

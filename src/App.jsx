@@ -1,6 +1,6 @@
 import CssBaseline from "@mui/material/CssBaseline";
 import { BrowserRouter, Route, Routes } from "react-router-dom";
-import Navbar from "./Components/navbar/Navbar";
+import PersistentDrawer from "./Components/persistentDrawer/PersistentDrawer";
 import PlayVideo from "./Components/playVideo/PlayVideo";
 import usePlaylists from "./hooks/usePlaylists";
 import Home from "./page/Home";
@@ -16,7 +16,7 @@ const App = () => {
     <>
       <CssBaseline />
       <BrowserRouter>
-        <Navbar getPlaylistById={getPlaylistById} />
+        <PersistentDrawer getPlaylistById={getPlaylistById} />
         <Routes>
           <Route path="/" element={<Home playlistArray={playlistArray} />} />
           <Route path="*" element={<NotFound />} />
