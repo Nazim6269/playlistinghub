@@ -1,8 +1,6 @@
 import { CardMedia, Container, Typography } from "@mui/material";
-import React, { useEffect } from "react";
 import { useParams } from "react-router-dom";
 import PlaylistSingleVideo from "../Components/playlistSingleVideo/PlaylistSingleVideo";
-import { useStoreActions } from "easy-peasy";
 
 const VideoPlaylist = ({ playlists }) => {
   const { playlistId } = useParams();

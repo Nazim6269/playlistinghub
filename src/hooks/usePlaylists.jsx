@@ -11,7 +11,6 @@ const INIT_STATE = {
 
 const usePlaylists = () => {
   const [state, setState] = useState(INIT_STATE);
-
   const [error, setError] = useState("");
   const [isLoading, setIsLoading] = useState(false);
 
@@ -37,6 +36,7 @@ const usePlaylists = () => {
 
     try {
       const playlist = await getPlayList(playlistId);
+      console.log(playlist, "usePlaylist");
 
       setError("");
       setState((prev) => ({

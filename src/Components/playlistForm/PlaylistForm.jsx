@@ -7,14 +7,14 @@ import DialogTitle from "@mui/material/DialogTitle";
 import TextField from "@mui/material/TextField";
 import { useState } from "react";
 
-const PlaylistForm = ({ open, handleClose, getPlaylistId }) => {
+const PlaylistForm = ({ open, handleClose, getPlaylistById }) => {
   const [state, setState] = useState("");
 
   const handleSubmit = () => {
     if (!state) {
       alert("Invalid id");
     } else {
-      getPlaylistId(state);
+      getPlaylistById(state);
       setState("");
       handleClose();
     }
