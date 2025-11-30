@@ -8,7 +8,7 @@ import IconButton from "@mui/material/IconButton";
 import Toolbar from "@mui/material/Toolbar";
 import Typography from "@mui/material/Typography";
 import { styled, useTheme } from "@mui/material/styles";
-import { NavLink } from "react-router-dom";
+import { NavLink, Link as RouterLink } from "react-router-dom";
 
 const AppBar = styled(MuiAppBar, {
   shouldForwardProp: (prop) => prop !== "open",
@@ -58,8 +58,14 @@ const NavBar = () => {
             <Typography
               variant="h4"
               noWrap
-              component="div"
-              sx={{ fontWeight: 600 }}
+              component={RouterLink}
+              to="/"
+              sx={{
+                fontWeight: 600,
+                textDecoration: "none",
+                color: "inherit",
+                cursor: "pointer",
+              }}
             >
               YouTube Manager
             </Typography>
