@@ -26,10 +26,26 @@ import PlaylistForm from "../Components/playlistForm/PlaylistForm";
 import RecentActivityCard from "../Components/recentActivity/RecentActivityCard";
 
 // ======component starts from here===========//
-const Home = ({ getPlaylistById, playlistArray }) => {
+const Home = ({ getPlaylistById, playlistArray, favoritesIds = [], removePlaylist, addToFavorites, removeFromFavorites }) => {
   const [search, setSearch] = useState("");
   const [formOpen, setFormOpen] = useState(false);
   const [activeCategory, setActiveCategory] = useState("All");
+
+  // Handle favorite toggle
+  const handleFavorite = (playlistId) => {
+    if (favoritesIds.includes(playlistId)) {
+      removeFromFavorites?.(playlistId);
+    } else {
+      addToFavorites?.(playlistId);
+    }
+  };
+
+  // Handle remove playlist
+  const handleRemove = (playlistId) => {
+    if (window.confirm("Are you sure you want to remove this playlist?")) {
+      removePlaylist?.(playlistId);
+    }
+  };
 
   // Category keywords mapping
   const categoryKeywords = {
@@ -231,6 +247,9 @@ const Home = ({ getPlaylistById, playlistArray }) => {
                   playlistThumb={item.playlistThumb}
                   playlistTitle={item.playlistTitle}
                   channelTitle={item.channelTitle}
+                  onFavorite={() => handleFavorite(item.playlistId)}
+                  onRemove={() => handleRemove(item.playlistId)}
+                  isFavorite={favoritesIds.includes(item.playlistId)}
                 />
               </Grid>
             ))}

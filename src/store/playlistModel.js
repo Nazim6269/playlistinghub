@@ -18,6 +18,10 @@ const playlistModel = persist({
     state.error = payload;
   }),
 
+  removePlaylist: action((state, payload) => {
+    delete state.data[payload];
+  }),
+
   //thunk are here
   getPlaylistData: thunk(async (actions, playlistId, helpers) => {
     if (helpers.getState().data[playlistId]) {

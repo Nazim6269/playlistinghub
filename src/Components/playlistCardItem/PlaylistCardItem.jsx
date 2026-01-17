@@ -1,6 +1,7 @@
 import {
   DeleteOutline,
   FavoriteBorderOutlined,
+  Favorite,
   PlayCircleFilledOutlined,
 } from "@mui/icons-material";
 import { Box, Button, Stack, Typography } from "@mui/material";
@@ -17,6 +18,7 @@ const PlaylistCardItem = ({
   playlistId,
   onRemove, // function to remove playlist
   onFavorite, // function to add favorite
+  isFavorite = false, // whether playlist is favorited
 }) => {
   return (
     <Card
@@ -112,11 +114,12 @@ const PlaylistCardItem = ({
             flexGrow: 1,
             textTransform: "none",
             fontWeight: 600,
-            color: "#ff6b81",
+            color: isFavorite ? "#ff6b81" : "#ff6b81",
             borderRadius: 3,
             border: "1px solid #ff6b81",
+            background: isFavorite ? "rgba(255,107,129,0.1)" : "transparent",
             "&:hover": {
-              background: "rgba(255,107,129,0.08)",
+              background: "rgba(255,107,129,0.15)",
             },
             minWidth: 0,
           }}
@@ -127,9 +130,9 @@ const PlaylistCardItem = ({
             gap={1}
             justifyContent="center"
           >
-            <FavoriteBorderOutlined />
+            {isFavorite ? <Favorite /> : <FavoriteBorderOutlined />}
             <Typography variant="body2" fontWeight={600}>
-              Add To Favorite
+              {isFavorite ? "Favorited" : "Add To Favorite"}
             </Typography>
           </Stack>
         </Button>

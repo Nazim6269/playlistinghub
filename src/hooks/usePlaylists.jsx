@@ -54,16 +54,42 @@ const usePlaylists = () => {
   };
 
   const addToFavorites = (playlistId) => {
+    setState((prev) => {
+      // Avoid duplicates
+      if (prev.favorites.includes(playlistId)) {
+        return prev;
+      }
+      return {
+        ...prev,
+        favorites: [...prev.favorites, playlistId],
+      };
+    });
+  };
+
+  const removeFromFavorites = (playlistId) => {
     setState((prev) => ({
       ...prev,
-      favorites: [...prev, playlistId],
+      favorites: prev.favorites.filter((id) => id !== playlistId),
     }));
+  };
+
+  const removePlaylist = (playlistId) => {
+    setState((prev) => {
+      const newPlaylists = { ...prev.playlists };
+      delete newPlaylists[playlistId];
+      return {
+        ...prev,
+        playlists: newPlaylists,
+        favorites: prev.favorites.filter((id) => id !== playlistId),
+        recentPlaylists: prev.recentPlaylists.filter((id) => id !== playlistId),
+      };
+    });
   };
 
   const addToRecent = (playlistId) => {
     setState((prev) => ({
       ...prev,
-      recentPlaylists: [...prev, playlistId],
+      recentPlaylists: [...prev.recentPlaylists, playlistId],
     }));
   };
 
@@ -74,12 +100,15 @@ const usePlaylists = () => {
   return {
     playlists: state.playlists,
     favorites: getPlaylistsByIds(state.favorites),
+    favoritesIds: state.favorites,
     recentPlaylists: getPlaylistsByIds(state.recentPlaylists),
     error,
     isLoading,
     getPlaylistById,
     addToRecent,
     addToFavorites,
+    removeFromFavorites,
+    removePlaylist,
   };
 };
 
