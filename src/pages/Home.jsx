@@ -26,7 +26,7 @@ import PlaylistForm from "../Components/playlistForm/PlaylistForm";
 import RecentActivityCard from "../Components/recentActivity/RecentActivityCard";
 
 // ======component starts from here===========//
-const Home = ({ getPlaylistById, playlistArray, favoritesIds = [], removePlaylist, addToFavorites, removeFromFavorites }) => {
+const Home = ({ getPlaylistById, playlistArray, favoritesIds = [], removePlaylist, addToFavorites, removeFromFavorites, addToRecent }) => {
   const [search, setSearch] = useState("");
   const [formOpen, setFormOpen] = useState(false);
   const [activeCategory, setActiveCategory] = useState("All");
@@ -249,6 +249,7 @@ const Home = ({ getPlaylistById, playlistArray, favoritesIds = [], removePlaylis
                   channelTitle={item.channelTitle}
                   onFavorite={() => handleFavorite(item.playlistId)}
                   onRemove={() => handleRemove(item.playlistId)}
+                  onView={() => addToRecent?.(item.playlistId)}
                   isFavorite={favoritesIds.includes(item.playlistId)}
                 />
               </Grid>

@@ -20,7 +20,9 @@ const App = () => {
     favoritesIds, 
     removePlaylist, 
     addToFavorites, 
-    removeFromFavorites 
+    removeFromFavorites,
+    recentPlaylists,
+    addToRecent
   } = usePlaylists();
   const playlistArray = Object.values(playlists);
 
@@ -40,6 +42,7 @@ const App = () => {
                 removePlaylist={removePlaylist}
                 addToFavorites={addToFavorites}
                 removeFromFavorites={removeFromFavorites}
+                addToRecent={addToRecent}
               />
             }
           />
@@ -54,10 +57,18 @@ const App = () => {
                 removePlaylist={removePlaylist}
                 addToFavorites={addToFavorites}
                 removeFromFavorites={removeFromFavorites}
+                addToRecent={addToRecent}
               />
             }
           />
-          <Route path="/recents" element={<Recents />} />
+          <Route path="/recents" element={<Recents 
+            recentPlaylists={recentPlaylists}
+            favoritesIds={favoritesIds}
+            removePlaylist={removePlaylist}
+            addToFavorites={addToFavorites}
+            removeFromFavorites={removeFromFavorites}
+            addToRecent={addToRecent}
+          />} />
           <Route
             path="/player/:playlistId"
             element={<VideoPlaylist playlists={playlists} />}

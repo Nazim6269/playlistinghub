@@ -10,6 +10,7 @@ const Favorites = ({
   removePlaylist,
   addToFavorites,
   removeFromFavorites,
+  addToRecent,
 }) => {
   // Handle favorite toggle
   const handleFavorite = (playlistId) => {
@@ -77,6 +78,7 @@ const Favorites = ({
                     channelTitle={item.channelTitle}
                     onFavorite={() => handleFavorite(item.playlistId)}
                     onRemove={() => handleRemove(item.playlistId)}
+                    onView={() => addToRecent?.(item.playlistId)}
                     isFavorite={favoritesIds.includes(item.playlistId)}
                   />
                 </Grid>

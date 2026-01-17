@@ -87,10 +87,14 @@ const usePlaylists = () => {
   };
 
   const addToRecent = (playlistId) => {
-    setState((prev) => ({
-      ...prev,
-      recentPlaylists: [...prev.recentPlaylists, playlistId],
-    }));
+    setState((prev) => {
+      // Avoid duplicates and keep only last 10
+      const newRecents = prev.recentPlaylists.filter((id) => id !== playlistId);
+      return {
+        ...prev,
+        recentPlaylists: [playlistId, ...newRecents].slice(0, 10),
+      };
+    });
   };
 
   const getPlaylistsByIds = (ids = []) => {

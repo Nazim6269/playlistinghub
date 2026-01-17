@@ -75,7 +75,7 @@ const NavBar = () => {
               {/* navigation stack */}
               <Stack direction="row" alignItems="center" spacing={3}>
                 <MenuLink to="/">Home</MenuLink>
-                <MenuLink to="/playlists">Playlists</MenuLink>
+               
                 <MenuLink to="/favorites">Favorites</MenuLink>
                 <MenuLink to="/recents">Recents</MenuLink>
               </Stack>

@@ -19,6 +19,7 @@ const PlaylistCardItem = ({
   onRemove, // function to remove playlist
   onFavorite, // function to add favorite
   isFavorite = false, // whether playlist is favorited
+  onView, // function called when playlist is viewed
 }) => {
   return (
     <Card
@@ -81,6 +82,7 @@ const PlaylistCardItem = ({
         <Button
           to={`/player/${playlistId}`}
           component={Link}
+          onClick={() => onView?.(playlistId)}
           sx={{
             flexGrow: 1,
             textTransform: "none",
