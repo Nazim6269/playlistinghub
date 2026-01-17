@@ -17,7 +17,7 @@ import {
   Typography,
 } from "@mui/material";
 import PropTypes from "prop-types";
-import { useState } from "react";
+import { useMemo, useState } from "react";
 import { categories } from "../../data";
 import DashboardCard from "../Components/dashboard/DashboardCard";
 import NoPLaylistsItem from "../Components/playlistCardItem/NoPLaylistsItem";
@@ -30,6 +30,49 @@ const Home = ({ getPlaylistById, playlistArray }) => {
   const [search, setSearch] = useState("");
   const [formOpen, setFormOpen] = useState(false);
   const [activeCategory, setActiveCategory] = useState("All");
+
+  // Category keywords mapping
+  const categoryKeywords = {
+    Coding: ["coding", "programming", "javascript", "react", "python", "code", "tutorial", "developer", "web development", "software"],
+    Design: ["design", "ui", "ux", "figma", "photoshop", "graphic", "interface", "visual", "creative"],
+    Marketing: ["marketing", "seo", "social media", "advertising", "business", "strategy", "digital marketing"],
+    Finance: ["finance", "money", "investment", "trading", "stock", "cryptocurrency", "budget", "economics"],
+  };
+
+  // Filter playlists based on search and category
+  const filteredPlaylists = useMemo(() => {
+    let filtered = [...playlistArray];
+
+    // Apply search filter
+    if (search.trim()) {
+      const searchLower = search.toLowerCase().trim();
+      filtered = filtered.filter((playlist) => {
+        const title = (playlist.playlistTitle || "").toLowerCase();
+        const channel = (playlist.channelTitle || "").toLowerCase();
+        const description = (playlist.playlistDesc || "").toLowerCase();
+        
+        return (
+          title.includes(searchLower) ||
+          channel.includes(searchLower) ||
+          description.includes(searchLower)
+        );
+      });
+    }
+
+    // Apply category filter
+    if (activeCategory !== "All") {
+      const keywords = categoryKeywords[activeCategory] || [];
+      filtered = filtered.filter((playlist) => {
+        const title = (playlist.playlistTitle || "").toLowerCase();
+        const description = (playlist.playlistDesc || "").toLowerCase();
+        const combined = `${title} ${description}`;
+        
+        return keywords.some((keyword) => combined.includes(keyword.toLowerCase()));
+      });
+    }
+
+    return filtered;
+  }, [playlistArray, search, activeCategory]);
 
   return (
     <Box
@@ -172,9 +215,9 @@ const Home = ({ getPlaylistById, playlistArray }) => {
 
         {/* Playlists are renderd from here */}
 
-        {playlistArray.length > 0 ? (
+        {filteredPlaylists.length > 0 ? (
           <Grid container spacing={3} sx={{ mt: 4, mb: 5 }}>
-            {playlistArray.map((item) => (
+            {filteredPlaylists.map((item) => (
               <Grid
                 key={item.playlistId}
                 item
@@ -192,6 +235,15 @@ const Home = ({ getPlaylistById, playlistArray }) => {
               </Grid>
             ))}
           </Grid>
+        ) : playlistArray.length > 0 ? (
+          <Box sx={{ textAlign: "center", py: 8 }}>
+            <Typography variant="h6" color="text.secondary">
+              No playlists found matching your search criteria
+            </Typography>
+            <Typography variant="body2" color="text.secondary" sx={{ mt: 1 }}>
+              Try adjusting your search or category filter
+            </Typography>
+          </Box>
         ) : (
           <NoPLaylistsItem />
         )}
