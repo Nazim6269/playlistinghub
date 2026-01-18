@@ -6,7 +6,19 @@ import { Link as RouterLink, useParams } from "react-router-dom";
 const VideoPlaylist = ({ playlists, getPlaylistById, isLoading, error }) => {
   const { playlistId } = useParams();
   const [searchQuery, setSearchQuery] = useState("");
+  const [debouncedQuery, setDebouncedQuery] = useState("");
   const current = playlists[playlistId];
+
+  // Debounce logic
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      setDebouncedQuery(searchQuery);
+    }, 500);
+
+    return () => {
+      clearTimeout(handler);
+    };
+  }, [searchQuery]);
 
   useEffect(() => {
     if (!current && getPlaylistById) {
@@ -16,13 +28,13 @@ const VideoPlaylist = ({ playlists, getPlaylistById, isLoading, error }) => {
 
   const filteredVideos = useMemo(() => {
     if (!current?.playlistItems) return [];
-    if (!searchQuery.trim()) return current.playlistItems;
+    if (!debouncedQuery.trim()) return current.playlistItems;
 
-    const query = searchQuery.toLowerCase().trim();
+    const query = debouncedQuery.toLowerCase().trim();
     return current.playlistItems.filter((item) =>
       item.title.toLowerCase().includes(query)
     );
-  }, [current, searchQuery]);
+  }, [current, debouncedQuery]);
 
   if (isLoading && !current) {
     return (
@@ -231,7 +243,7 @@ const VideoPlaylist = ({ playlists, getPlaylistById, isLoading, error }) => {
           {filteredVideos.length === 0 && (
             <Box sx={{ gridColumn: "1 / -1", textAlign: "center", py: 4 }}>
               <Typography variant="h6" color="text.secondary">
-                No videos found matching "{searchQuery}"
+                No videos found matching "{debouncedQuery}"
               </Typography>
             </Box>
           )}

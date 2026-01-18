@@ -17,7 +17,7 @@ import {
   Typography,
 } from "@mui/material";
 import PropTypes from "prop-types";
-import { useMemo, useState } from "react";
+import { useEffect, useMemo, useState } from "react";
 import { categories } from "../../data";
 import DashboardCard from "../Components/dashboard/DashboardCard";
 import NoPLaylistsItem from "../Components/playlistCardItem/NoPLaylistsItem";
@@ -28,8 +28,20 @@ import RecentActivityCard from "../Components/recentActivity/RecentActivityCard"
 // ======component starts from here===========//
 const Home = ({ getPlaylistById, playlistArray, favoritesIds = [], removePlaylist, addToFavorites, removeFromFavorites, addToRecent }) => {
   const [search, setSearch] = useState("");
+  const [debouncedSearch, setDebouncedSearch] = useState("");
   const [formOpen, setFormOpen] = useState(false);
   const [activeCategory, setActiveCategory] = useState("All");
+
+  // Debounce logic
+  useEffect(() => {
+    const handler = setTimeout(() => {
+      setDebouncedSearch(search);
+    }, 500);
+
+    return () => {
+      clearTimeout(handler);
+    };
+  }, [search]);
 
   // Handle favorite toggle
   const handleFavorite = (playlistId) => {
@@ -59,14 +71,14 @@ const Home = ({ getPlaylistById, playlistArray, favoritesIds = [], removePlaylis
   const filteredPlaylists = useMemo(() => {
     let filtered = [...playlistArray];
 
-    // Apply search filter
-    if (search.trim()) {
-      const searchLower = search.toLowerCase().trim();
+    // Apply search filter using the debounced value
+    if (debouncedSearch.trim()) {
+      const searchLower = debouncedSearch.toLowerCase().trim();
       filtered = filtered.filter((playlist) => {
         const title = (playlist.playlistTitle || "").toLowerCase();
         const channel = (playlist.channelTitle || "").toLowerCase();
         const description = (playlist.playlistDesc || "").toLowerCase();
-        
+
         return (
           title.includes(searchLower) ||
           channel.includes(searchLower) ||
@@ -82,13 +94,13 @@ const Home = ({ getPlaylistById, playlistArray, favoritesIds = [], removePlaylis
         const title = (playlist.playlistTitle || "").toLowerCase();
         const description = (playlist.playlistDesc || "").toLowerCase();
         const combined = `${title} ${description}`;
-        
+
         return keywords.some((keyword) => combined.includes(keyword.toLowerCase()));
       });
     }
 
     return filtered;
-  }, [playlistArray, search, activeCategory]);
+  }, [playlistArray, debouncedSearch, activeCategory]);
 
   return (
     <Box
