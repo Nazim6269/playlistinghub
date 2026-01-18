@@ -26,7 +26,16 @@ import PlaylistForm from "../Components/playlistForm/PlaylistForm";
 import RecentActivityCard from "../Components/recentActivity/RecentActivityCard";
 
 // ======component starts from here===========//
-const Home = ({ getPlaylistById, playlistArray, favoritesIds = [], removePlaylist, addToFavorites, removeFromFavorites, addToRecent }) => {
+const Home = ({
+  getPlaylistById,
+  playlistArray,
+  favoritesIds = [],
+  removePlaylist,
+  addToFavorites,
+  removeFromFavorites,
+  addToRecent,
+  recentPlaylists = []
+}) => {
   const [search, setSearch] = useState("");
   const [debouncedSearch, setDebouncedSearch] = useState("");
   const [formOpen, setFormOpen] = useState(false);
@@ -216,7 +225,7 @@ const Home = ({ getPlaylistById, playlistArray, favoritesIds = [], removePlaylis
           <Grid item xs={12} md={4}>
             <DashboardCard
               title="Playlists"
-              value="12"
+              value={playlistArray.length.toString()}
               icon={<PlaylistPlay />}
               color="#11998e"
             />
@@ -225,7 +234,7 @@ const Home = ({ getPlaylistById, playlistArray, favoritesIds = [], removePlaylis
           <Grid item xs={12} md={4}>
             <DashboardCard
               title="Favorites"
-              value="6"
+              value={favoritesIds.length.toString()}
               icon={<Favorite />}
               color="#ff7675"
             />
@@ -234,7 +243,7 @@ const Home = ({ getPlaylistById, playlistArray, favoritesIds = [], removePlaylis
           <Grid item xs={12} md={4}>
             <DashboardCard
               title="Recents"
-              value="24"
+              value={recentPlaylists.length.toString()}
               icon={<History />}
               color="#6c5ce7"
             />
@@ -287,10 +296,14 @@ const Home = ({ getPlaylistById, playlistArray, favoritesIds = [], removePlaylis
           </Typography>
 
           <Stack spacing={2}>
-            {["JavaScript Course", "React Tutorial", "UI Design Rules"].map(
-              (title, i) => (
-                <RecentActivityCard key={i} title={title} />
-              )
+            {recentPlaylists.length > 0 ? (
+              recentPlaylists.slice(0, 5).map((playlist, i) => (
+                <RecentActivityCard key={playlist.playlistId || i} title={playlist.playlistTitle} />
+              ))
+            ) : (
+              <Typography variant="body2" color="text.secondary">
+                No recent activity. Start watching a playlist to see it here!
+              </Typography>
             )}
           </Stack>
         </Card>
@@ -301,8 +314,10 @@ const Home = ({ getPlaylistById, playlistArray, favoritesIds = [], removePlaylis
 
 //defining props
 Home.propTypes = {
-  getPlaylistId: PropTypes.string,
+  getPlaylistById: PropTypes.func,
   playlistArray: PropTypes.array,
+  favoritesIds: PropTypes.array,
+  recentPlaylists: PropTypes.array,
 };
 
 export default Home;

@@ -45,6 +45,7 @@ const App = () => {
                 addToFavorites={addToFavorites}
                 removeFromFavorites={removeFromFavorites}
                 addToRecent={addToRecent}
+                recentPlaylists={recentPlaylists}
               />
             }
           />
