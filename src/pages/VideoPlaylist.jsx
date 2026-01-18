@@ -1,11 +1,57 @@
-import { Box, CardMedia, Container, Typography } from "@mui/material";
+import { Search } from "@mui/icons-material";
+import { Box, Button, CardMedia, CircularProgress, Container, InputAdornment, TextField, Typography } from "@mui/material";
+import { useEffect, useMemo, useState } from "react";
 import { Link as RouterLink, useParams } from "react-router-dom";
 
-const VideoPlaylist = ({ playlists }) => {
+const VideoPlaylist = ({ playlists, getPlaylistById, isLoading, error }) => {
   const { playlistId } = useParams();
+  const [searchQuery, setSearchQuery] = useState("");
   const current = playlists[playlistId];
 
-  if (!current) return;
+  useEffect(() => {
+    if (!current && getPlaylistById) {
+      getPlaylistById(playlistId);
+    }
+  }, [playlistId, current, getPlaylistById]);
+
+  const filteredVideos = useMemo(() => {
+    if (!current?.playlistItems) return [];
+    if (!searchQuery.trim()) return current.playlistItems;
+
+    const query = searchQuery.toLowerCase().trim();
+    return current.playlistItems.filter((item) =>
+      item.title.toLowerCase().includes(query)
+    );
+  }, [current, searchQuery]);
+
+  if (isLoading && !current) {
+    return (
+      <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", minHeight: "100vh" }}>
+        <CircularProgress color="inherit" sx={{ color: "#11998e" }} />
+      </Box>
+    );
+  }
+
+  if (error || !current) {
+    return (
+      <Box sx={{ p: 10, textAlign: "center", minHeight: "80vh", mt: 10 }}>
+        <Typography variant="h5" color="error" gutterBottom>
+          {error || "Playlist not found or could not be loaded."}
+        </Typography>
+        <Typography variant="body1" sx={{ mt: 2, mb: 4 }}>
+          Make sure the playlist ID <strong>{playlistId}</strong> is correct and public.
+        </Typography>
+        <Button
+          component={RouterLink}
+          to="/"
+          variant="contained"
+          sx={{ background: "#11998e", "&:hover": { background: "#0e7a71" } }}
+        >
+          Go Back Home
+        </Button>
+      </Box>
+    );
+  }
 
   return (
     <Box
@@ -70,6 +116,36 @@ const VideoPlaylist = ({ playlists }) => {
           </Box>
         </Box>
 
+        {/* Search Bar */}
+        <Box sx={{ mb: 4 }}>
+          <TextField
+            fullWidth
+            variant="outlined"
+            placeholder="Search videos in this playlist..."
+            value={searchQuery}
+            onChange={(e) => setSearchQuery(e.target.value)}
+            InputProps={{
+              startAdornment: (
+                <InputAdornment position="start">
+                  <Search sx={{ color: "#11998e" }} />
+                </InputAdornment>
+              ),
+            }}
+            sx={{
+              background: "#fff",
+              borderRadius: 2,
+              "& .MuiOutlinedInput-root": {
+                "& fieldset": { borderColor: "rgba(17,153,142,0.2)" },
+                "&:hover fieldset": { borderColor: "#11998e" },
+                "&.Mui-focused fieldset": { borderColor: "#11998e" },
+              },
+            }}
+          />
+          <Typography variant="body2" color="text.secondary" sx={{ mt: 1, ml: 1 }}>
+            Showing {filteredVideos.length} of {current.playlistItems.length} videos
+          </Typography>
+        </Box>
+
         {/* Video Grid */}
         <Box
           sx={{
@@ -82,7 +158,7 @@ const VideoPlaylist = ({ playlists }) => {
             gap: 3,
           }}
         >
-          {current.playlistItems.map((item, index) => {
+          {filteredVideos.map((item, index) => {
             const { title, thumbnail } = item;
 
             return (
@@ -152,6 +228,13 @@ const VideoPlaylist = ({ playlists }) => {
               </Box>
             );
           })}
+          {filteredVideos.length === 0 && (
+            <Box sx={{ gridColumn: "1 / -1", textAlign: "center", py: 4 }}>
+              <Typography variant="h6" color="text.secondary">
+                No videos found matching "{searchQuery}"
+              </Typography>
+            </Box>
+          )}
         </Box>
       </Container>
     </Box>
