@@ -17,7 +17,7 @@ import {
   Typography,
 } from "@mui/material";
 import PropTypes from "prop-types";
-import { useEffect, useMemo, useState } from "react";
+import { useMemo, useState } from "react";
 import { categories } from "../../data";
 import DashboardCard from "../Components/dashboard/DashboardCard";
 import NoPLaylistsItem from "../Components/playlistCardItem/NoPLaylistsItem";
@@ -26,31 +26,10 @@ import PlaylistForm from "../Components/playlistForm/PlaylistForm";
 import RecentActivityCard from "../Components/recentActivity/RecentActivityCard";
 
 // ======component starts from here===========//
-const Home = ({
-  getPlaylistById,
-  playlistArray,
-  favoritesIds = [],
-  removePlaylist,
-  addToFavorites,
-  removeFromFavorites,
-  addToRecent,
-  recentPlaylists = []
-}) => {
+const Home = ({ getPlaylistById, playlistArray, favoritesIds = [], removePlaylist, addToFavorites, removeFromFavorites, addToRecent }) => {
   const [search, setSearch] = useState("");
-  const [debouncedSearch, setDebouncedSearch] = useState("");
   const [formOpen, setFormOpen] = useState(false);
   const [activeCategory, setActiveCategory] = useState("All");
-
-  // Debounce logic
-  useEffect(() => {
-    const handler = setTimeout(() => {
-      setDebouncedSearch(search);
-    }, 500);
-
-    return () => {
-      clearTimeout(handler);
-    };
-  }, [search]);
 
   // Handle favorite toggle
   const handleFavorite = (playlistId) => {
@@ -80,14 +59,14 @@ const Home = ({
   const filteredPlaylists = useMemo(() => {
     let filtered = [...playlistArray];
 
-    // Apply search filter using the debounced value
-    if (debouncedSearch.trim()) {
-      const searchLower = debouncedSearch.toLowerCase().trim();
+    // Apply search filter
+    if (search.trim()) {
+      const searchLower = search.toLowerCase().trim();
       filtered = filtered.filter((playlist) => {
         const title = (playlist.playlistTitle || "").toLowerCase();
         const channel = (playlist.channelTitle || "").toLowerCase();
         const description = (playlist.playlistDesc || "").toLowerCase();
-
+        
         return (
           title.includes(searchLower) ||
           channel.includes(searchLower) ||
@@ -103,13 +82,13 @@ const Home = ({
         const title = (playlist.playlistTitle || "").toLowerCase();
         const description = (playlist.playlistDesc || "").toLowerCase();
         const combined = `${title} ${description}`;
-
+        
         return keywords.some((keyword) => combined.includes(keyword.toLowerCase()));
       });
     }
 
     return filtered;
-  }, [playlistArray, debouncedSearch, activeCategory]);
+  }, [playlistArray, search, activeCategory]);
 
   return (
     <Box
@@ -225,7 +204,7 @@ const Home = ({
           <Grid item xs={12} md={4}>
             <DashboardCard
               title="Playlists"
-              value={playlistArray.length.toString()}
+              value="12"
               icon={<PlaylistPlay />}
               color="#11998e"
             />
@@ -234,7 +213,7 @@ const Home = ({
           <Grid item xs={12} md={4}>
             <DashboardCard
               title="Favorites"
-              value={favoritesIds.length.toString()}
+              value="6"
               icon={<Favorite />}
               color="#ff7675"
             />
@@ -243,7 +222,7 @@ const Home = ({
           <Grid item xs={12} md={4}>
             <DashboardCard
               title="Recents"
-              value={recentPlaylists.length.toString()}
+              value="24"
               icon={<History />}
               color="#6c5ce7"
             />
@@ -296,14 +275,10 @@ const Home = ({
           </Typography>
 
           <Stack spacing={2}>
-            {recentPlaylists.length > 0 ? (
-              recentPlaylists.slice(0, 5).map((playlist, i) => (
-                <RecentActivityCard key={playlist.playlistId || i} title={playlist.playlistTitle} />
-              ))
-            ) : (
-              <Typography variant="body2" color="text.secondary">
-                No recent activity. Start watching a playlist to see it here!
-              </Typography>
+            {["JavaScript Course", "React Tutorial", "UI Design Rules"].map(
+              (title, i) => (
+                <RecentActivityCard key={i} title={title} />
+              )
             )}
           </Stack>
         </Card>
@@ -314,10 +289,8 @@ const Home = ({
 
 //defining props
 Home.propTypes = {
-  getPlaylistById: PropTypes.func,
+  getPlaylistId: PropTypes.string,
   playlistArray: PropTypes.array,
-  favoritesIds: PropTypes.array,
-  recentPlaylists: PropTypes.array,
 };
 
 export default Home;

@@ -13,18 +13,16 @@ import VideoPlaylist from "./pages/VideoPlaylist";
 
 //========== app component starts from here===============//
 const App = () => {
-  const {
-    getPlaylistById,
-    playlists,
-    favorites,
-    favoritesIds,
-    removePlaylist,
-    addToFavorites,
+  const { 
+    getPlaylistById, 
+    playlists, 
+    favorites, 
+    favoritesIds, 
+    removePlaylist, 
+    addToFavorites, 
     removeFromFavorites,
     recentPlaylists,
-    addToRecent,
-    isLoading,
-    error
+    addToRecent
   } = usePlaylists();
   const playlistArray = Object.values(playlists);
 
@@ -45,7 +43,6 @@ const App = () => {
                 addToFavorites={addToFavorites}
                 removeFromFavorites={removeFromFavorites}
                 addToRecent={addToRecent}
-                recentPlaylists={recentPlaylists}
               />
             }
           />
@@ -64,7 +61,7 @@ const App = () => {
               />
             }
           />
-          <Route path="/recents" element={<Recents
+          <Route path="/recents" element={<Recents 
             recentPlaylists={recentPlaylists}
             favoritesIds={favoritesIds}
             removePlaylist={removePlaylist}
@@ -74,14 +71,7 @@ const App = () => {
           />} />
           <Route
             path="/player/:playlistId"
-            element={
-              <VideoPlaylist
-                playlists={playlists}
-                getPlaylistById={getPlaylistById}
-                isLoading={isLoading}
-                error={error}
-              />
-            }
+            element={<VideoPlaylist playlists={playlists} />}
           />
           <Route path="/player/:playlistId/:videoId" element={<PlayVideo />} />
         </Routes>
