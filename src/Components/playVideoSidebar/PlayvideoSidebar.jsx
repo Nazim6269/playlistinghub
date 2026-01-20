@@ -1,65 +1,92 @@
 import { Box, Container, Typography } from "@mui/material";
 import { useParams } from "react-router-dom";
+import { useStoreState } from "easy-peasy";
 import PlaylistSingleVideo from "../playlistSingleVideo/PlaylistSingleVideo";
 
-const PlayvideoSidebar = ({ playlists }) => {
+const PlayvideoSidebar = ({ playlists, currentVideoId }) => {
   const { playlistId } = useParams();
   const current = playlists[playlistId];
+  const { watchedVideos } = useStoreState((state) => state.playlists);
+  const watchedList = watchedVideos[playlistId] || [];
 
-  if (!current) return;
+  if (!current) return null;
+  const currentIndex = current.playlistItems.findIndex(item => item.contentDetails.videoId === currentVideoId);
 
   return (
-    <Container
-      maxWidth="lg"
+    <Box
       sx={{
-        p: 2,
+        width: "100%",
         height: "100%",
+        background: "#fff",
+        borderRadius: 3,
+        overflow: "hidden",
+        border: "1px solid rgba(0,0,0,0.1)",
+        boxShadow: "0 2px 8px rgba(0,0,0,0.05)"
       }}
     >
       {/* Header */}
-      <Typography
-        variant="h6"
-        fontWeight={700}
-        sx={{ color: "#11998e", mb: 2 }}
-      >
-        Playlist Videos
-      </Typography>
+      <Box sx={{ p: 2, borderBottom: "1px solid rgba(0,0,0,0.1)" }}>
+        <Typography
+          variant="subtitle1"
+          fontWeight={600}
+          sx={{ color: "#0f0f0f" }}
+        >
+          {current.playlistTitle}
+        </Typography>
+        <Typography variant="caption" color="text.secondary">
+          {current.channelTitle} - {currentIndex + 1}/{current.playlistItems.length}
+        </Typography>
+      </Box>
 
       {/* Scrollable List */}
       <Box
         sx={{
           display: "flex",
           flexDirection: "column",
-          gap: 1.5,
-          maxHeight: "calc(100vh - 180px)",
+          maxHeight: "calc(100vh - 250px)",
           overflowY: "auto",
-          pr: 1,
           "&::-webkit-scrollbar": {
-            width: 6,
+            width: 8,
           },
           "&::-webkit-scrollbar-thumb": {
-            background: "rgba(17,153,142,0.4)",
+            background: "rgba(0,0,0,0.1)",
             borderRadius: 4,
           },
+          "&:hover::-webkit-scrollbar-thumb": {
+            background: "rgba(0,0,0,0.2)",
+          }
         }}
       >
-        {current.playlistItems.map((item) => {
-          const { title, thumbnail } = item;
+        {current.playlistItems.map((item, index) => {
+          const { title, thumbnail, contentDetails } = item;
+          const isCurrent = contentDetails.videoId === currentVideoId;
+          const isWatched = watchedList.includes(contentDetails.videoId);
 
           return (
-            <Box key={item.contentDetails.videoId}>
+            <Box
+              key={contentDetails.videoId}
+              sx={{
+                background: isCurrent ? "rgba(0,0,0,0.05)" : "transparent",
+              }}
+            >
               <PlaylistSingleVideo
                 url={thumbnail.url}
                 title={title}
                 channelTitle={current.channelTitle}
-                videoId={item.contentDetails.videoId}
+                videoId={contentDetails.videoId}
+                playlistId={playlistId}
+                index={index}
+                isWatched={isWatched}
+                duration={item.duration}
               />
             </Box>
           );
         })}
       </Box>
-    </Container>
+    </Box>
   );
 };
 
+
 export default PlayvideoSidebar;
+

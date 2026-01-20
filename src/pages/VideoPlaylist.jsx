@@ -1,12 +1,17 @@
-import { Search } from "@mui/icons-material";
-import { Box, Button, CardMedia, CircularProgress, Container, InputAdornment, TextField, Typography } from "@mui/material";
+import { Search, CheckCircle, CheckCircleOutline } from "@mui/icons-material";
+import { Box, Button, CardMedia, CircularProgress, Container, InputAdornment, TextField, Typography, IconButton, Tooltip } from "@mui/material";
 import { useEffect, useMemo, useState } from "react";
 import { Link as RouterLink, useParams } from "react-router-dom";
+import { useStoreActions, useStoreState } from "easy-peasy";
 
-const VideoPlaylist = ({ playlists, getPlaylistById, isLoading, error }) => {
+const VideoPlaylist = () => {
   const { playlistId } = useParams();
   const [searchQuery, setSearchQuery] = useState("");
   const [debouncedQuery, setDebouncedQuery] = useState("");
+
+  const { data: playlists, watchedVideos, isLoading, error } = useStoreState((state) => state.playlists);
+  const { getPlaylistData: getPlaylistById, toggleWatched } = useStoreActions((actions) => actions.playlists);
+
   const current = playlists[playlistId];
 
   // Debounce logic
@@ -65,6 +70,8 @@ const VideoPlaylist = ({ playlists, getPlaylistById, isLoading, error }) => {
     );
   }
 
+  const watchedList = watchedVideos[playlistId] || [];
+
   return (
     <Box
       sx={{ minHeight: "100vh", background: "#E9F5F3", pt: 10, pb: 6, mt: 6 }}
@@ -116,13 +123,17 @@ const VideoPlaylist = ({ playlists, getPlaylistById, isLoading, error }) => {
               {current.playlistDesc}
             </Typography>
 
+            <Typography variant="subtitle1" fontWeight="bold" sx={{ mt: 1, color: "#11998e" }}>
+              Progress: {watchedList.length} / {current.playlistItems.length} videos watched
+            </Typography>
+
             <Box
               sx={{
                 width: 120,
                 height: 3,
                 background: "linear-gradient(to right, #11998e, #38ef7d)",
                 borderRadius: 5,
-                mt: 2,
+                mt: 1,
               }}
             />
           </Box>
@@ -171,22 +182,24 @@ const VideoPlaylist = ({ playlists, getPlaylistById, isLoading, error }) => {
           }}
         >
           {filteredVideos.map((item, index) => {
-            const { title, thumbnail } = item;
+            const { title, thumbnail, contentDetails } = item;
+            const isWatched = watchedList.includes(contentDetails.videoId);
 
             return (
               <Box
-                key={item.contentDetails.videoId}
-                component={RouterLink}
-                to={`/player/${current.playlistId}/${item.contentDetails.videoId}`}
+                key={contentDetails.videoId}
                 sx={{
                   position: "relative",
                   borderRadius: 3,
                   overflow: "hidden",
                   textDecoration: "none",
                   color: "inherit",
-                  background:
-                    "linear-gradient(135deg, rgba(17,153,142,0.05), rgba(56,239,125,0.03))",
-                  border: "1px solid rgba(17,153,142,0.15)",
+                  background: isWatched
+                    ? "rgba(17,153,142,0.05)"
+                    : "linear-gradient(135deg, rgba(17,153,142,0.05), rgba(56,239,125,0.03))",
+                  border: isWatched
+                    ? "1px solid #11998e"
+                    : "1px solid rgba(17,153,142,0.15)",
                   transition: "all 0.3s ease",
                   "&:hover": {
                     transform: "translateY(-5px) scale(1.02)",
@@ -203,7 +216,7 @@ const VideoPlaylist = ({ playlists, getPlaylistById, isLoading, error }) => {
                     width: 32,
                     height: 32,
                     borderRadius: "50%",
-                    backgroundColor: "#11998e",
+                    backgroundColor: isWatched ? "#38ef7d" : "#11998e",
                     color: "#fff",
                     display: "flex",
                     alignItems: "center",
@@ -216,26 +229,58 @@ const VideoPlaylist = ({ playlists, getPlaylistById, isLoading, error }) => {
                   {index + 1}
                 </Box>
 
-                {/* Video Thumbnail */}
-                <CardMedia
-                  component="img"
-                  image={thumbnail.url}
-                  sx={{ width: "100%", height: 160, objectFit: "cover" }}
-                />
+                {/* Mark as Watched Button */}
+                <Box sx={{ position: "absolute", top: 8, right: 8, zIndex: 2 }}>
+                  <Tooltip title={isWatched ? "Mark as unwatched" : "Mark as watched"}>
+                    <IconButton
+                      onClick={(e) => {
+                        e.preventDefault();
+                        e.stopPropagation();
+                        toggleWatched({ playlistId, videoId: contentDetails.videoId });
+                      }}
+                      sx={{
+                        backgroundColor: "rgba(255,255,255,0.8)",
+                        "&:hover": { backgroundColor: "#fff" },
+                        color: isWatched ? "#38ef7d" : "text.secondary"
+                      }}
+                      size="small"
+                    >
+                      {isWatched ? <CheckCircle /> : <CheckCircleOutline />}
+                    </IconButton>
+                  </Tooltip>
+                </Box>
 
-                {/* Video Info */}
-                <Box sx={{ p: 2 }}>
-                  <Typography
-                    variant="subtitle1"
-                    fontWeight={600}
-                    noWrap
-                    sx={{ mb: 0.5 }}
-                  >
-                    {title}
-                  </Typography>
-                  <Typography variant="body2" color="text.secondary" noWrap>
-                    {current.channelTitle}
-                  </Typography>
+                {/* Video Thumbnail */}
+                <Box
+                  component={RouterLink}
+                  to={`/player/${current.playlistId}/${contentDetails.videoId}`}
+                  sx={{ textDecoration: "none", color: "inherit" }}
+                >
+                  <CardMedia
+                    component="img"
+                    image={thumbnail.url}
+                    sx={{
+                      width: "100%",
+                      height: 160,
+                      objectFit: "cover",
+                      opacity: isWatched ? 0.7 : 1
+                    }}
+                  />
+
+                  {/* Video Info */}
+                  <Box sx={{ p: 2 }}>
+                    <Typography
+                      variant="subtitle1"
+                      fontWeight={600}
+                      noWrap
+                      sx={{ mb: 0.5, textDecoration: isWatched ? "line-through" : "none" }}
+                    >
+                      {title}
+                    </Typography>
+                    <Typography variant="body2" color="text.secondary" noWrap>
+                      {current.channelTitle}
+                    </Typography>
+                  </Box>
                 </Box>
               </Box>
             );
@@ -254,3 +299,4 @@ const VideoPlaylist = ({ playlists, getPlaylistById, isLoading, error }) => {
 };
 
 export default VideoPlaylist;
+

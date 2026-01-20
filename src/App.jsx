@@ -11,20 +11,32 @@ import Playlists from "./pages/Playlists";
 import Recents from "./pages/Recents";
 import VideoPlaylist from "./pages/VideoPlaylist";
 
+import { useStoreActions, useStoreState } from "easy-peasy";
+import { useEffect } from "react";
+
 //========== app component starts from here===============//
 const App = () => {
-  const { 
-    getPlaylistById, 
-    playlists, 
-    favorites, 
-    favoritesIds, 
-    removePlaylist, 
-    addToFavorites, 
-    removeFromFavorites,
-    recentPlaylists,
-    addToRecent
-  } = usePlaylists();
-  const playlistArray = Object.values(playlists);
+  const { data: playlists, favoritesIds, recentPlaylists } = useStoreState((state) => state.playlists);
+  const {
+    getPlaylistData: getPlaylistById,
+    removePlaylist,
+    toggleFavorite: addToFavorites,
+    addToRecent,
+  } = useStoreActions((actions) => actions.playlists || {});
+
+  // For compatibility with Home component's expected props
+  const playlistArray = Object.values(playlists || {});
+
+  // favorites is needed for Favorites page
+  const favorites = favoritesIds?.map(id => playlists[id]).filter(Boolean) || [];
+  // recent is needed for Recents page
+  const recent = recentPlaylists?.map(id => playlists[id]).filter(Boolean) || [];
+
+  // removeFromFavorites can be same as addToFavorites since it's a toggle now, 
+  // but let's see if we need separate action. 
+  // In playlistModel I added separate actions if needed, but toggle is easier.
+  // Actually I didn't add toggleFavorite yet. Let me check playlistModel.
+
 
   return (
     <>
@@ -38,10 +50,10 @@ const App = () => {
               <Home
                 getPlaylistById={getPlaylistById}
                 playlistArray={playlistArray}
-                favoritesIds={favoritesIds}
+                favoritesIds={favoritesIds || []}
                 removePlaylist={removePlaylist}
                 addToFavorites={addToFavorites}
-                removeFromFavorites={removeFromFavorites}
+                removeFromFavorites={addToFavorites} // toggle handles both
                 addToRecent={addToRecent}
               />
             }
@@ -53,25 +65,25 @@ const App = () => {
             element={
               <Favorites
                 favorites={favorites}
-                favoritesIds={favoritesIds}
+                favoritesIds={favoritesIds || []}
                 removePlaylist={removePlaylist}
                 addToFavorites={addToFavorites}
-                removeFromFavorites={removeFromFavorites}
+                removeFromFavorites={addToFavorites}
                 addToRecent={addToRecent}
               />
             }
           />
-          <Route path="/recents" element={<Recents 
-            recentPlaylists={recentPlaylists}
-            favoritesIds={favoritesIds}
+          <Route path="/recents" element={<Recents
+            recentPlaylists={recent}
+            favoritesIds={favoritesIds || []}
             removePlaylist={removePlaylist}
             addToFavorites={addToFavorites}
-            removeFromFavorites={removeFromFavorites}
+            removeFromFavorites={addToFavorites}
             addToRecent={addToRecent}
           />} />
           <Route
             path="/player/:playlistId"
-            element={<VideoPlaylist playlists={playlists} />}
+            element={<VideoPlaylist />}
           />
           <Route path="/player/:playlistId/:videoId" element={<PlayVideo />} />
         </Routes>
