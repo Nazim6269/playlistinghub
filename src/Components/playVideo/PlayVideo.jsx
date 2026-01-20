@@ -1,7 +1,7 @@
 import NavigateBeforeIcon from "@mui/icons-material/NavigateBefore";
 import NavigateNextIcon from "@mui/icons-material/NavigateNext";
 import { NoteAdd, Delete, AccessTime, CheckCircle, CheckCircleOutline } from "@mui/icons-material";
-import { Box, Button, Container, Stack, Typography, TextField, List, ListItem, ListItemText, ListItemSecondaryAction, IconButton, Divider, Paper, Tooltip } from "@mui/material";
+import { Box, Button, Container, Stack, Typography, TextField, List, ListItem, ListItemText, ListItemSecondaryAction, IconButton, Divider, Paper, Tooltip, Skeleton } from "@mui/material";
 import { useStoreActions, useStoreState } from "easy-peasy";
 import { useEffect, useState, useRef } from "react";
 import { useParams, useNavigate } from "react-router-dom";
@@ -14,14 +14,40 @@ const PlayVideo = () => {
   const playerRef = useRef(null);
   const [noteText, setNoteText] = useState("");
 
-  const { data, loading, notes, watchedVideos } = useStoreState((state) => state.playlists);
+  const { data, loading: isLoading, notes, watchedVideos } = useStoreState((state) => state.playlists);
   const { getPlaylistData: getPlaylistById, addNote, deleteNote, toggleWatched } = useStoreActions((actions) => actions.playlists);
 
   useEffect(() => {
     getPlaylistById(playlistId);
   }, [playlistId]);
 
-  if (loading || !data[playlistId]) return <Box sx={{ p: 10, textAlign: "center" }}><Typography>Loading...</Typography></Box>;
+  if (isLoading || !data[playlistId]) {
+    return (
+      <Box sx={{ minHeight: "100vh", bgcolor: "background.default", pt: 4, pb: 6 }}>
+        <Container maxWidth="xl" sx={{ my: 10 }}>
+          <Stack direction={{ xs: "column", lg: "row" }} spacing={4}>
+            <Box sx={{ flex: 1 }}>
+              <Skeleton variant="rectangular" width="100%" sx={{ aspectRatio: '16/9', mb: 2 }} />
+              <Stack direction="row" spacing={2} justifyContent="space-between" sx={{ mb: 4 }}>
+                <Skeleton variant="rectangular" width={120} height={40} />
+                <Skeleton variant="rectangular" width={150} height={40} />
+                <Skeleton variant="rectangular" width={120} height={40} />
+              </Stack>
+              <Skeleton variant="text" width="60%" height={40} />
+              <Skeleton variant="text" width="30%" height={24} sx={{ mb: 2 }} />
+              <Divider sx={{ mb: 2 }} />
+              <Skeleton variant="text" width="100%" height={20} />
+              <Skeleton variant="text" width="90%" height={20} />
+            </Box>
+            <Box sx={{ width: { lg: 420 } }}>
+              <Skeleton variant="rectangular" width="100%" height={600} />
+            </Box>
+          </Stack>
+        </Container>
+      </Box>
+    );
+  }
+
 
   const { playlistItems } = data[playlistId];
   const currentIndex = playlistItems.findIndex(item => item.contentDetails.videoId === id);

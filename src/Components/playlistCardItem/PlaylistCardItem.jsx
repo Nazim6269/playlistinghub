@@ -4,8 +4,10 @@ import {
   Favorite,
   PlayCircleFilledOutlined,
   Add,
+  FolderOpen,
+  Folder,
 } from "@mui/icons-material";
-import { Box, Button, Stack, Typography, LinearProgress, Chip, Menu, MenuItem } from "@mui/material";
+import { Box, Button, Stack, Typography, LinearProgress, Chip, Menu, MenuItem, Tooltip } from "@mui/material";
 import Card from "@mui/material/Card";
 import CardActions from "@mui/material/CardActions";
 import CardContent from "@mui/material/CardContent";
@@ -24,30 +26,19 @@ const PlaylistCardItem = ({
   isFavorite: propIsFavorite,
   onFavorite: propOnFavorite,
 }) => {
-  const [anchorEl, setAnchorEl] = useState(null);
-  const open = Boolean(anchorEl);
+  const [tagAnchorEl, setTagAnchorEl] = useState(null);
+  const [projectAnchorEl, setProjectAnchorEl] = useState(null);
 
-  const { watchedVideos, playlistTags, tags, data, favoritesIds } = useStoreState((state) => state.playlists);
-  const { assignTagToPlaylist, removeTagFromPlaylist, toggleFavorite } = useStoreActions((actions) => actions.playlists);
+  const { watchedVideos, playlistTags, tags, data, favoritesIds, projects } = useStoreState((state) => state.playlists);
+  const { assignTagToPlaylist, removeTagFromPlaylist, toggleFavorite, addPlaylistToProject, removePlaylistFromProject } = useStoreActions((actions) => actions.playlists);
 
-  // Use store if props aren't provided or for extra data
   const isFavorite = propIsFavorite !== undefined ? propIsFavorite : (favoritesIds || []).includes(playlistId);
   const onFavorite = propOnFavorite || (() => toggleFavorite(playlistId));
 
   const watchedCount = (watchedVideos[playlistId] || []).length;
   const totalCount = data[playlistId]?.playlistItems?.length || 0;
   const assignedTags = playlistTags[playlistId] || [];
-  const availableTags = tags || [];
-
-  const onAssignTag = (tag) => assignTagToPlaylist({ playlistId, tag });
-  const onRemoveTag = (tag) => removeTagFromPlaylist({ playlistId, tag });
-
-  const handleClick = (event) => {
-    setAnchorEl(event.currentTarget);
-  };
-  const handleClose = () => {
-    setAnchorEl(null);
-  };
+  const assignedProjects = Object.values(projects).filter(p => p.playlistIds.includes(playlistId));
 
   const progress = totalCount > 0 ? (watchedCount / totalCount) * 100 : 0;
 
@@ -61,26 +52,23 @@ const PlaylistCardItem = ({
         m: 1,
         borderRadius: 0,
         overflow: 'hidden',
-        transition: "0.3s cubic-bezier(0.4, 0, 0.2, 1)",
+        transition: "0.4s cubic-bezier(0.4, 0, 0.2, 1)",
+        border: '1px solid',
+        borderColor: 'divider',
+        boxShadow: 'none',
         "&:hover": {
-          transform: "translateY(-8px)",
-          boxShadow: (theme) => `0 20px 25px -5px ${theme.palette.grey[400]}40`,
+          transform: "translateY(-4px)",
+          boxShadow: (theme) => `0 12px 20px -10px ${theme.palette.grey[400]}`,
         },
       }}
     >
-      {/* Thumbnail */}
       <Box sx={{ position: "relative", height: 160 }}>
         <CardMedia
           component="img"
           image={playlistThumb.url}
           alt={playlistTitle}
-          sx={{
-            width: "100%",
-            height: "100%",
-            objectFit: "cover",
-          }}
+          sx={{ width: "100%", height: "100%", objectFit: "cover" }}
         />
-        {/* Progress Bar Overlay */}
         <Box sx={{ position: "absolute", bottom: 0, left: 0, right: 0, width: "100%" }}>
           <LinearProgress
             variant="determinate"
@@ -96,70 +84,87 @@ const PlaylistCardItem = ({
         </Box>
       </Box>
 
-      {/* Content */}
       <CardContent sx={{ pb: 1, flexGrow: 1 }}>
         <Typography
           variant="subtitle1"
-          fontWeight={800}
-          color="text.primary"
-          sx={{
-            lineHeight: 1.2,
-            display: "-webkit-box",
-            WebkitLineClamp: 2,
-            WebkitBoxOrient: "vertical",
-            overflow: "hidden",
-            mb: 1
-          }}
+          fontWeight={900}
+          sx={{ lineHeight: 1.2, mb: 1, display: "-webkit-box", WebkitLineClamp: 2, WebkitBoxOrient: "vertical", overflow: "hidden" }}
         >
           {playlistTitle}
         </Typography>
-        <Typography variant="caption" color="text.secondary" fontWeight={600}>
-          {channelTitle}
+        <Typography variant="caption" color="text.secondary" fontWeight={800} sx={{ display: 'block', mb: 1 }}>
+          {channelTitle.toUpperCase()}
         </Typography>
 
-        {/* Progress Text */}
-        <Typography variant="caption" sx={{ mt: 1, display: "block", fontWeight: 700, color: progress === 100 ? "success.main" : "primary.main" }}>
-          {watchedCount}/{totalCount} videos completed
+        <Typography variant="caption" sx={{ fontWeight: 800, color: progress === 100 ? "success.main" : "primary.main" }}>
+          {watchedCount}/{totalCount} VIDEOS WATCHED
         </Typography>
 
-        {/* Tags */}
-        <Stack direction="row" spacing={0.5} sx={{ mt: 2, flexWrap: "wrap", gap: 0.5 }}>
-          {assignedTags.map(tag => (
+        {/* PROJECTS & TAGS */}
+        <Stack spacing={1.5} sx={{ mt: 2 }}>
+          {/* Projects */}
+          <Stack direction="row" spacing={0.5} flexWrap="wrap" gap={0.5}>
+            {assignedProjects.map(proj => (
+              <Chip
+                key={proj.id}
+                icon={<Folder sx={{ fontSize: "0.8rem !important" }} />}
+                label={proj.name}
+                size="small"
+                onDelete={() => removePlaylistFromProject({ projectId: proj.id, playlistId })}
+                color="primary"
+                sx={{ fontSize: "0.6rem", height: 20, fontWeight: 800, borderRadius: 0 }}
+              />
+            ))}
             <Chip
-              key={tag}
-              label={tag}
+              icon={<Add sx={{ fontSize: "0.8rem !important" }} />}
+              label="PROJECT"
               size="small"
-              onDelete={() => onRemoveTag(tag)}
-              color="secondary"
+              onClick={(e) => setProjectAnchorEl(e.currentTarget)}
               variant="outlined"
-              sx={{ fontSize: "0.65rem", height: 22, fontWeight: 600 }}
+              sx={{ fontSize: "0.6rem", height: 20, fontWeight: 800, borderRadius: 0, borderStyle: 'dashed' }}
             />
-          ))}
-          <Chip
-            icon={<Add sx={{ fontSize: "0.9rem !important" }} />}
-            label="Tag"
-            size="small"
-            onClick={handleClick}
-            variant="outlined"
-            sx={{ fontSize: "0.65rem", height: 22, cursor: "pointer", borderStyle: 'dashed' }}
-          />
+          </Stack>
+
+          {/* Tags */}
+          <Stack direction="row" spacing={0.5} flexWrap="wrap" gap={0.5}>
+            {assignedTags.map(tag => (
+              <Chip
+                key={tag}
+                label={tag}
+                size="small"
+                onDelete={() => removeTagFromPlaylist({ playlistId, tag })}
+                variant="outlined"
+                sx={{ fontSize: "0.6rem", height: 20, fontWeight: 800, borderRadius: 0 }}
+              />
+            ))}
+            <Chip
+              icon={<Add sx={{ fontSize: "0.8rem !important" }} />}
+              label="TAG"
+              size="small"
+              onClick={(e) => setTagAnchorEl(e.currentTarget)}
+              variant="outlined"
+              sx={{ fontSize: "0.6rem", height: 20, fontWeight: 800, borderRadius: 0, borderStyle: 'dashed' }}
+            />
+          </Stack>
         </Stack>
 
-        <Menu
-          anchorEl={anchorEl}
-          open={open}
-          onClose={handleClose}
-        >
-          {availableTags.filter(tag => !assignedTags.includes(tag)).map((tag) => (
-            <MenuItem key={tag} onClick={() => { onAssignTag(tag); handleClose(); }}>
-              {tag}
-            </MenuItem>
+        {/* Tag Menu */}
+        <Menu anchorEl={tagAnchorEl} open={Boolean(tagAnchorEl)} onClose={() => setTagAnchorEl(null)}>
+          {tags.filter(t => !assignedTags.includes(t)).map(tag => (
+            <MenuItem key={tag} onClick={() => { assignTagToPlaylist({ playlistId, tag }); setTagAnchorEl(null); }} sx={{ fontSize: '0.8rem', fontWeight: 700 }}>{tag}</MenuItem>
           ))}
-          {availableTags.filter(tag => !assignedTags.includes(tag)).length === 0 && (
-            <MenuItem disabled>No more tags</MenuItem>
-          )}
+          {tags.filter(t => !assignedTags.includes(t)).length === 0 && <MenuItem disabled>No more tags</MenuItem>}
+        </Menu>
+
+        {/* Project Menu */}
+        <Menu anchorEl={projectAnchorEl} open={Boolean(projectAnchorEl)} onClose={() => setProjectAnchorEl(null)}>
+          {Object.values(projects).filter(p => !p.playlistIds.includes(playlistId)).map(proj => (
+            <MenuItem key={proj.id} onClick={() => { addPlaylistToProject({ projectId: proj.id, playlistId }); setProjectAnchorEl(null); }} sx={{ fontSize: '0.8rem', fontWeight: 700 }}>{proj.name}</MenuItem>
+          ))}
+          {Object.values(projects).filter(p => !p.playlistIds.includes(playlistId)).length === 0 && <MenuItem disabled>Create a Project first</MenuItem>}
         </Menu>
       </CardContent>
+
 
       {/* Actions */}
       <CardActions

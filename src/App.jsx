@@ -12,11 +12,11 @@ import Recents from "./pages/Recents";
 import VideoPlaylist from "./pages/VideoPlaylist";
 
 import { useStoreActions, useStoreState } from "easy-peasy";
-import { useEffect } from "react";
+import { useEffect, useMemo } from "react";
 
 //========== app component starts from here===============//
 const App = () => {
-  const { data: playlists, favoritesIds, recentPlaylists } = useStoreState((state) => state.playlists);
+  const { data: playlists, favoritesIds, recentPlaylists, playlistOrder } = useStoreState((state) => state.playlists);
   const {
     getPlaylistData: getPlaylistById,
     removePlaylist,
@@ -24,13 +24,24 @@ const App = () => {
     addToRecent,
   } = useStoreActions((actions) => actions.playlists || {});
 
-  // For compatibility with Home component's expected props
-  const playlistArray = Object.values(playlists || {});
+  // Compute ordered arrays
+  const playlistArray = useMemo(() => {
+    if (!playlists) return [];
+    const ordered = (playlistOrder || []).map(id => playlists[id]).filter(Boolean);
+    const remaining = Object.values(playlists).filter(p => !playlistOrder.includes(p.playlistId));
+    return [...ordered, ...remaining];
+  }, [playlists, playlistOrder]);
 
-  // favorites is needed for Favorites page
-  const favorites = favoritesIds?.map(id => playlists[id]).filter(Boolean) || [];
-  // recent is needed for Recents page
-  const recent = recentPlaylists?.map(id => playlists[id]).filter(Boolean) || [];
+  const favorites = useMemo(() =>
+    favoritesIds?.map(id => playlists[id]).filter(Boolean) || [],
+    [favoritesIds, playlists]
+  );
+
+  const recent = useMemo(() =>
+    recentPlaylists?.map(id => playlists[id]).filter(Boolean) || [],
+    [recentPlaylists, playlists]
+  );
+
 
   // removeFromFavorites can be same as addToFavorites since it's a toggle now, 
   // but let's see if we need separate action. 

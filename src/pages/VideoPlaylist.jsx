@@ -1,8 +1,9 @@
 import { Search, CheckCircle, CheckCircleOutline } from "@mui/icons-material";
-import { Box, Button, CardMedia, CircularProgress, Container, InputAdornment, TextField, Typography, IconButton, Tooltip } from "@mui/material";
+import { Box, Button, CardMedia, CircularProgress, Container, InputAdornment, TextField, Typography, IconButton, Tooltip, Grid, Skeleton } from "@mui/material";
 import { useEffect, useMemo, useState } from "react";
 import { Link as RouterLink, useParams } from "react-router-dom";
 import { useStoreActions, useStoreState } from "easy-peasy";
+import VideoSkeleton, { VideoHeaderSkeleton } from "../Components/playlistCardItem/VideoSkeleton";
 
 const VideoPlaylist = () => {
   const { playlistId } = useParams();
@@ -43,11 +44,29 @@ const VideoPlaylist = () => {
 
   if (isLoading && !current) {
     return (
-      <Box sx={{ display: "flex", justifyContent: "center", alignItems: "center", minHeight: "100vh" }}>
-        <CircularProgress color="inherit" sx={{ color: "#11998e" }} />
+      <Box sx={{ minHeight: "100vh", bgcolor: "background.default", pt: 10, pb: 6, mt: 6 }}>
+        <Container maxWidth="lg">
+          <VideoHeaderSkeleton />
+          <Box sx={{ mb: 4 }}>
+            <Skeleton variant="rectangular" width="100%" height={56} sx={{ mb: 1 }} />
+            <Skeleton variant="text" width={150} height={20} />
+          </Box>
+          <Box
+            sx={{
+              display: "grid",
+              gridTemplateColumns: { xs: "1fr", sm: "1fr 1fr", md: "1fr 1fr 1fr" },
+              gap: 3,
+            }}
+          >
+            {[1, 2, 3, 4, 5, 6].map((i) => (
+              <VideoSkeleton key={i} />
+            ))}
+          </Box>
+        </Container>
       </Box>
     );
   }
+
 
   if (error || !current) {
     return (
