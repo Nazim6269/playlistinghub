@@ -74,7 +74,7 @@ const VideoPlaylist = () => {
 
   return (
     <Box
-      sx={{ minHeight: "100vh", background: "#E9F5F3", pt: 10, pb: 6, mt: 6 }}
+      sx={{ minHeight: "100vh", bgcolor: "background.default", pt: 10, pb: 6, mt: 6 }}
     >
       <Container maxWidth="lg">
         {/* Header Card */}
@@ -84,11 +84,11 @@ const VideoPlaylist = () => {
             p: { xs: 3, md: 4 },
             display: "flex",
             flexDirection: { xs: "column", md: "row" },
-            gap: 3,
-            borderRadius: 4,
-            background:
-              "linear-gradient(135deg, rgba(17,153,142,0.08), rgba(56,239,125,0.05))",
-            border: "1px dashed rgba(17,153,142,0.3)",
+            gap: 4,
+            borderRadius: 0,
+            bgcolor: "background.paper",
+            border: "1px solid",
+            borderColor: "divider",
             alignItems: "center",
           }}
         >
@@ -99,9 +99,8 @@ const VideoPlaylist = () => {
             sx={{
               width: { xs: "100%", md: 280 },
               height: 180,
-              borderRadius: 3,
+              borderRadius: 0,
               objectFit: "cover",
-              boxShadow: "0 8px 16px rgba(0,0,0,0.1)",
             }}
           />
 
@@ -109,8 +108,8 @@ const VideoPlaylist = () => {
           <Box sx={{ textAlign: { xs: "center", md: "left" } }}>
             <Typography
               variant="h4"
-              fontWeight={700}
-              sx={{ color: "#11998e", mb: 1 }}
+              fontWeight={800}
+              sx={{ color: "text.primary", mb: 1 }}
             >
               {current.playlistTitle}
             </Typography>
@@ -123,19 +122,9 @@ const VideoPlaylist = () => {
               {current.playlistDesc}
             </Typography>
 
-            <Typography variant="subtitle1" fontWeight="bold" sx={{ mt: 1, color: "#11998e" }}>
-              Progress: {watchedList.length} / {current.playlistItems.length} videos watched
+            <Typography variant="subtitle1" fontWeight="bold" sx={{ mt: 2, color: "primary.main" }}>
+              Progress: {watchedList.length} / {current.playlistItems.length} videos completed
             </Typography>
-
-            <Box
-              sx={{
-                width: 120,
-                height: 3,
-                background: "linear-gradient(to right, #11998e, #38ef7d)",
-                borderRadius: 5,
-                mt: 1,
-              }}
-            />
           </Box>
         </Box>
 
@@ -150,17 +139,15 @@ const VideoPlaylist = () => {
             InputProps={{
               startAdornment: (
                 <InputAdornment position="start">
-                  <Search sx={{ color: "#11998e" }} />
+                  <Search sx={{ color: "primary.main" }} />
                 </InputAdornment>
               ),
             }}
             sx={{
-              background: "#fff",
-              borderRadius: 2,
+              bgcolor: "background.paper",
+              borderRadius: 0,
               "& .MuiOutlinedInput-root": {
-                "& fieldset": { borderColor: "rgba(17,153,142,0.2)" },
-                "&:hover fieldset": { borderColor: "#11998e" },
-                "&.Mui-focused fieldset": { borderColor: "#11998e" },
+                borderRadius: 0,
               },
             }}
           />
@@ -190,20 +177,17 @@ const VideoPlaylist = () => {
                 key={contentDetails.videoId}
                 sx={{
                   position: "relative",
-                  borderRadius: 3,
+                  borderRadius: 0,
                   overflow: "hidden",
                   textDecoration: "none",
                   color: "inherit",
-                  background: isWatched
-                    ? "rgba(17,153,142,0.05)"
-                    : "linear-gradient(135deg, rgba(17,153,142,0.05), rgba(56,239,125,0.03))",
-                  border: isWatched
-                    ? "1px solid #11998e"
-                    : "1px solid rgba(17,153,142,0.15)",
-                  transition: "all 0.3s ease",
+                  bgcolor: "background.paper",
+                  border: "1px solid",
+                  borderColor: isWatched ? "success.main" : "divider",
+                  transition: "0.2s ease-in-out",
                   "&:hover": {
-                    transform: "translateY(-5px) scale(1.02)",
-                    boxShadow: "0 10px 25px rgba(0,0,0,0.08)",
+                    transform: "translateY(-4px)",
+                    boxShadow: (theme) => `0 10px 20px -5px ${theme.palette.grey[300]}`,
                   },
                 }}
               >
@@ -213,17 +197,17 @@ const VideoPlaylist = () => {
                     position: "absolute",
                     top: 8,
                     left: 8,
-                    width: 32,
-                    height: 32,
-                    borderRadius: "50%",
-                    backgroundColor: isWatched ? "#38ef7d" : "#11998e",
+                    width: 28,
+                    height: 28,
+                    borderRadius: 0,
+                    backgroundColor: isWatched ? "success.main" : "primary.main",
                     color: "#fff",
                     display: "flex",
                     alignItems: "center",
                     justifyContent: "center",
-                    fontWeight: 600,
+                    fontSize: '0.75rem',
+                    fontWeight: 800,
                     zIndex: 2,
-                    boxShadow: "0 2px 6px rgba(0,0,0,0.2)",
                   }}
                 >
                   {index + 1}
@@ -239,9 +223,10 @@ const VideoPlaylist = () => {
                         toggleWatched({ playlistId, videoId: contentDetails.videoId });
                       }}
                       sx={{
-                        backgroundColor: "rgba(255,255,255,0.8)",
+                        backgroundColor: "rgba(255,255,255,0.9)",
                         "&:hover": { backgroundColor: "#fff" },
-                        color: isWatched ? "#38ef7d" : "text.secondary"
+                        color: isWatched ? "success.main" : "text.secondary",
+                        borderRadius: 0
                       }}
                       size="small"
                     >
@@ -263,21 +248,30 @@ const VideoPlaylist = () => {
                       width: "100%",
                       height: 160,
                       objectFit: "cover",
-                      opacity: isWatched ? 0.7 : 1
+                      opacity: isWatched ? 0.7 : 1,
+                      borderRadius: 0
                     }}
                   />
 
                   {/* Video Info */}
                   <Box sx={{ p: 2 }}>
                     <Typography
-                      variant="subtitle1"
-                      fontWeight={600}
-                      noWrap
-                      sx={{ mb: 0.5, textDecoration: isWatched ? "line-through" : "none" }}
+                      variant="subtitle2"
+                      fontWeight={700}
+                      sx={{
+                        mb: 0.5,
+                        lineHeight: 1.3,
+                        textDecoration: isWatched ? "line-through" : "none",
+                        display: "-webkit-box",
+                        WebkitLineClamp: 2,
+                        WebkitBoxOrient: "vertical",
+                        overflow: "hidden",
+                        color: isWatched ? "text.secondary" : "text.primary"
+                      }}
                     >
                       {title}
                     </Typography>
-                    <Typography variant="body2" color="text.secondary" noWrap>
+                    <Typography variant="caption" color="text.secondary" fontWeight={600}>
                       {current.channelTitle}
                     </Typography>
                   </Box>
@@ -286,8 +280,8 @@ const VideoPlaylist = () => {
             );
           })}
           {filteredVideos.length === 0 && (
-            <Box sx={{ gridColumn: "1 / -1", textAlign: "center", py: 4 }}>
-              <Typography variant="h6" color="text.secondary">
+            <Box sx={{ gridColumn: "1 / -1", textAlign: "center", py: 8, bgcolor: 'background.paper', border: '1px dashed', borderColor: 'divider' }}>
+              <Typography variant="h6" color="text.secondary" fontWeight={700}>
                 No videos found matching "{debouncedQuery}"
               </Typography>
             </Box>
@@ -296,6 +290,7 @@ const VideoPlaylist = () => {
       </Container>
     </Box>
   );
+
 };
 
 export default VideoPlaylist;

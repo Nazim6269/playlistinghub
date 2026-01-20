@@ -77,7 +77,6 @@ const PlayVideo = () => {
     }
   };
 
-  const width = "100%";
   const opts = {
     width: "100%",
     height: "500px",
@@ -85,7 +84,7 @@ const PlayVideo = () => {
   };
 
   return (
-    <Box sx={{ minHeight: "100vh", background: "#E9F5F3", pt: 4, pb: 6 }}>
+    <Box sx={{ minHeight: "100vh", bgcolor: "background.default", pt: 4, pb: 6 }}>
       <Container maxWidth="xl" sx={{ my: 10 }}>
         <Stack direction={{ xs: "column", lg: "row" }} spacing={4}>
           {/* Main Video Section */}
@@ -93,18 +92,18 @@ const PlayVideo = () => {
             <Box
               sx={{
                 p: { xs: 2, md: 3 },
-                borderRadius: 4,
-                background:
-                  "linear-gradient(135deg, rgba(17,153,142,0.06), rgba(56,239,125,0.03))",
-                border: "1px dashed rgba(17,153,142,0.25)",
+                borderRadius: 0,
+                bgcolor: "background.paper",
+                border: "1px solid",
+                borderColor: "divider",
               }}
             >
               {/* Player */}
               <Box
                 sx={{
                   overflow: "hidden",
-                  borderRadius: 3,
-                  boxShadow: "0 10px 30px rgba(0,0,0,.15)",
+                  borderRadius: 0,
+                  boxShadow: "0 4px 20px rgba(0,0,0,.1)",
                   aspectRatio: "16/9"
                 }}
               >
@@ -127,14 +126,8 @@ const PlayVideo = () => {
                   startIcon={<NavigateBeforeIcon />}
                   onClick={handlePrev}
                   disabled={currentIndex === 0}
-                  sx={{
-                    borderRadius: 3,
-                    px: 3,
-                    borderColor: "#11998e",
-                    color: "#11998e",
-                    fontWeight: 600,
-                    textTransform: "none",
-                  }}
+                  color="inherit"
+                  sx={{ borderRadius: 0 }}
                 >
                   Previous
                 </Button>
@@ -143,14 +136,10 @@ const PlayVideo = () => {
                   variant="contained"
                   startIcon={isWatched ? <CheckCircle /> : <CheckCircleOutline />}
                   onClick={() => toggleWatched({ playlistId, videoId: id })}
+                  color={isWatched ? "success" : "primary"}
                   sx={{
-                    borderRadius: 3,
+                    borderRadius: 0,
                     px: 3,
-                    background: isWatched ? "#38ef7d" : "#11998e",
-                    color: "#fff",
-                    fontWeight: 600,
-                    textTransform: "none",
-                    "&:hover": { background: isWatched ? "#2ecc71" : "#0e7a71" }
                   }}
                 >
                   {isWatched ? "Watched" : "Mark as Watched"}
@@ -161,56 +150,42 @@ const PlayVideo = () => {
                   endIcon={<NavigateNextIcon />}
                   onClick={handleNext}
                   disabled={currentIndex === playlistItems.length - 1}
-                  sx={{
-                    borderRadius: 3,
-                    px: 3,
-                    borderColor: "#38ef7d",
-                    color: "#11998e",
-                    fontWeight: 600,
-                    textTransform: "none",
-                  }}
+                  color="inherit"
+                  sx={{ borderRadius: 0 }}
                 >
                   Next
                 </Button>
               </Stack>
 
               {/* Info */}
-              <Box sx={{ mt: 3 }}>
+              <Box sx={{ mt: 4 }}>
                 <Typography
                   variant="h5"
-                  fontWeight={700}
-                  sx={{ color: "#11998e", mb: 1, textDecoration: isWatched ? "line-through" : "none" }}
+                  fontWeight={800}
+                  sx={{ color: "text.primary", mb: 1, textDecoration: isWatched ? "line-through" : "none" }}
                 >
                   {currentItem.title}
                 </Typography>
 
-                <Typography color="text.secondary">
+                <Typography variant="subtitle1" color="primary.main" fontWeight={600}>
                   {data[playlistId].channelTitle}
                 </Typography>
 
-                <Box
-                  sx={{
-                    width: 100,
-                    height: 3,
-                    background: "linear-gradient(to right, #11998e, #38ef7d)",
-                    borderRadius: 5,
-                    my: 2,
-                  }}
-                />
+                <Divider sx={{ my: 2 }} />
 
-                <Typography variant="body2" color="text.secondary">
+                <Typography variant="body2" color="text.secondary" sx={{ fontStyle: 'italic' }}>
                   {data[playlistId].playlistDesc}
                 </Typography>
               </Box>
             </Box>
 
             {/* Notes Section */}
-            <Paper sx={{ mt: 4, p: 3, borderRadius: 4, background: "#fff" }}>
-              <Typography variant="h6" fontWeight="bold" sx={{ color: "#11998e", mb: 2 }}>
+            <Paper sx={{ mt: 4, p: 4, borderRadius: 0, boxShadow: "none", border: "1px solid", borderColor: "divider" }}>
+              <Typography variant="h6" fontWeight="bold" sx={{ color: "text.primary", mb: 3 }}>
                 Video Notes
               </Typography>
 
-              <Stack direction="row" spacing={2} sx={{ mb: 3 }}>
+              <Stack direction="row" spacing={2} sx={{ mb: 4 }}>
                 <TextField
                   fullWidth
                   placeholder="Take a note... (timestamp will be saved automatically)"
@@ -219,61 +194,65 @@ const PlayVideo = () => {
                   onKeyPress={(e) => e.key === 'Enter' && handleAddNote()}
                   variant="outlined"
                   size="small"
+                  sx={{ "& .MuiOutlinedInput-root": { borderRadius: 0 } }}
                 />
                 <Button
                   variant="contained"
                   onClick={handleAddNote}
                   startIcon={<NoteAdd />}
-                  sx={{ background: "#11998e", borderRadius: 2 }}
+                  sx={{ borderRadius: 0 }}
                 >
-                  Add
+                  Add Note
                 </Button>
               </Stack>
-
-              <Divider sx={{ mb: 2 }} />
 
               {videoNotes.length > 0 ? (
                 <List>
                   {videoNotes.map((note, index) => (
-                    <ListItem
-                      key={index}
-                      disablePadding
-                      sx={{
-                        mb: 1,
-                        p: 1.5,
-                        borderRadius: 2,
-                        "&:hover": { background: "rgba(17,153,142,0.05)" }
-                      }}
-                    >
-                      <ListItemText
-                        primary={note.text}
-                        secondary={
-                          <Typography
-                            variant="caption"
-                            sx={{ color: "#11998e", cursor: "pointer", fontWeight: "bold", display: "flex", alignItems: "center", mt: 0.5 }}
-                            onClick={() => jumpToTime(note.timestamp)}
+                    <Box key={index}>
+                      <ListItem
+                        disablePadding
+                        sx={{
+                          py: 2,
+                          borderRadius: 0,
+                          "&:hover": { bgcolor: "grey.50" }
+                        }}
+                      >
+                        <ListItemText
+                          primary={
+                            <Typography fontWeight={600} color="text.primary">
+                              {note.text}
+                            </Typography>
+                          }
+                          secondary={
+                            <Button
+                              size="small"
+                              startIcon={<AccessTime sx={{ fontSize: 16 }} />}
+                              onClick={() => jumpToTime(note.timestamp)}
+                              sx={{ mt: 1, color: "primary.main", fontWeight: 700, borderRadius: 0 }}
+                            >
+                              Jump to {formatTime(note.timestamp)}
+                            </Button>
+                          }
+                        />
+                        <ListItemSecondaryAction>
+                          <IconButton
+                            edge="end"
+                            onClick={() => deleteNote({ videoId: id, noteIndex: index })}
+                            size="small"
+                            color="error"
                           >
-                            <AccessTime sx={{ fontSize: 14, mr: 0.5 }} />
-                            Jump to {formatTime(note.timestamp)}
-                          </Typography>
-                        }
-                      />
-                      <ListItemSecondaryAction>
-                        <IconButton
-                          edge="end"
-                          onClick={() => deleteNote({ videoId: id, noteIndex: index })}
-                          size="small"
-                          sx={{ color: "#ff7675" }}
-                        >
-                          <Delete fontSize="small" />
-                        </IconButton>
-                      </ListItemSecondaryAction>
-                    </ListItem>
+                            <Delete fontSize="small" />
+                          </IconButton>
+                        </ListItemSecondaryAction>
+                      </ListItem>
+                      {index < videoNotes.length - 1 && <Divider component="li" />}
+                    </Box>
                   ))}
                 </List>
               ) : (
-                <Typography variant="body2" color="text.secondary" sx={{ textAlign: "center", py: 2 }}>
-                  No notes for this video yet.
+                <Typography variant="body2" color="text.secondary" sx={{ textAlign: "center", py: 4, bgcolor: 'grey.50', borderRadius: 0 }}>
+                  No notes for this video yet. Capturing notes helps in retention!
                 </Typography>
               )}
             </Paper>
@@ -283,12 +262,14 @@ const PlayVideo = () => {
           <Box
             sx={{
               width: { xs: "100%", lg: 420 },
-              borderRadius: 4,
-              background:
-                "linear-gradient(135deg, rgba(17,153,142,0.04), rgba(56,239,125,0.03))",
-              border: "1px solid rgba(17,153,142,0.15)",
-              p: 2,
-              height: "fit-content"
+              bgcolor: "background.paper",
+              borderRadius: 0,
+              border: "1px solid",
+              borderColor: "divider",
+              p: 1,
+              height: "fit-content",
+              position: 'sticky',
+              top: 24,
             }}
           >
             <PlayvideoSidebar playlists={data} currentVideoId={id} />
@@ -297,7 +278,9 @@ const PlayVideo = () => {
       </Container>
     </Box>
   );
+
 };
+
 
 export default PlayVideo;
 

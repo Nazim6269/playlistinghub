@@ -27,22 +27,23 @@ const MenuLink = styled(NavLink)(({ theme }) => ({
   borderRadius: "8px",
   textDecoration: "none",
   fontWeight: 600,
-  color: "#fff", // White text on the solid background
+  color: theme.palette.primary.contrastText,
   transition: "all 0.3s ease",
   "&:hover": {
-    background: "rgba(255, 255, 255, 0.1)",
-    transform: "scale(1.05)",
+    background: "rgba(255, 255, 255, 0.15)",
+    transform: "translateY(-1px)",
   },
   "&.active": {
-    background: "#fff",
-    color: "#11998e",
+    background: theme.palette.common.white,
+    color: theme.palette.primary.main,
+    boxShadow: "0 4px 6px -1px rgb(0 0 0 / 0.1)",
   },
 }));
 
 // Styled NavLink for Mobile Drawer
 const MobileMenuLink = styled(NavLink)(({ theme }) => ({
   textDecoration: "none",
-  color: "inherit",
+  color: theme.palette.text.primary,
   width: "100%",
   display: "block",
   padding: "12px 24px",
@@ -50,8 +51,8 @@ const MobileMenuLink = styled(NavLink)(({ theme }) => ({
   fontWeight: 600,
   transition: "all 0.2s ease",
   "&.active": {
-    background: "#11998e",
-    color: "#fff",
+    background: theme.palette.primary.main,
+    color: theme.palette.primary.contrastText,
   },
 }));
 
@@ -64,6 +65,7 @@ const navItems = [
 //----------Navbar component starts from here-----------//
 const NavBar = () => {
   const [mobileOpen, setMobileOpen] = useState(false);
+  const theme = useTheme();
 
   const handleDrawerToggle = () => {
     setMobileOpen((prevState) => !prevState);
@@ -76,7 +78,7 @@ const NavBar = () => {
         textAlign: "center",
         p: 2,
         height: "100%",
-        background: "#fff",
+        background: theme.palette.background.paper,
       }}
     >
       <Stack
@@ -92,16 +94,17 @@ const NavBar = () => {
           sx={{
             fontWeight: 800,
             textDecoration: "none",
-            color: "#11998e",
+            color: "primary.main",
             flexGrow: 1,
             textAlign: "left",
             pl: 1,
+            letterSpacing: '-0.02em'
           }}
         >
           YT Manager
         </Typography>
         <IconButton
-          sx={{ color: "#11998e" }}
+          sx={{ color: "primary.main" }}
           onClick={handleDrawerToggle}
           aria-label="close drawer"
         >
@@ -131,8 +134,8 @@ const NavBar = () => {
         position="sticky"
         sx={{
           py: 0.5,
-          background: "#11998e", // Solid color as requested in previous session
-          boxShadow: "0 2px 10px rgba(0,0,0,0.1)",
+          background: theme.palette.primary.main,
+          boxShadow: theme.shadows[4],
         }}
       >
         <Container maxWidth="xl">
@@ -144,11 +147,12 @@ const NavBar = () => {
               component={RouterLink}
               to="/"
               sx={{
-                fontWeight: 700,
+                fontWeight: 800,
                 textDecoration: "none",
                 color: "inherit",
                 cursor: "pointer",
                 fontSize: { xs: "1.2rem", sm: "1.5rem", md: "1.8rem" },
+                letterSpacing: '-0.03em'
               }}
             >
               YouTube Manager
@@ -204,5 +208,6 @@ const NavBar = () => {
     </Box>
   );
 };
+
 
 export default NavBar;

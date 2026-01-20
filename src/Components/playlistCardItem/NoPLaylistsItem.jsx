@@ -10,27 +10,29 @@ const NoPLaylistsItem = () => {
         alignItems: "center",
         justifyContent: "center",
         textAlign: "center",
-        background: "rgba(17, 153, 142, 0.05)",
-        borderRadius: 3,
+        bgcolor: 'grey.50',
+        border: '1px dashed',
+        borderColor: 'divider',
+        borderRadius: 0,
       }}
     >
-      <Typography variant="h5" fontWeight="bold" color="#11998e" gutterBottom>
-        No playlists yet
+      <Typography variant="h5" fontWeight={800} color="primary.main" gutterBottom>
+        No Playlists Found
       </Typography>
       <Typography variant="body1" color="text.secondary" sx={{ mb: 3 }}>
-        You haven&apos;t added any playlists. Start by clicking the Add Playlist
-        button above.
+        Start by adding your favorite YouTube playlists to manage them here.
       </Typography>
       <Box
         sx={{
-          width: { xs: "60%", sm: "40%", md: "30%" },
-          height: 2,
-          background: "#11998e",
-          borderRadius: 1,
+          width: 80,
+          height: 4,
+          bgcolor: "primary.main",
+          borderRadius: 0,
           mb: 2,
         }}
       />
     </Box>
+
   );
 };
 

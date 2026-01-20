@@ -37,7 +37,7 @@ const Recents = ({
 
   return (
     <Box
-      sx={{ minHeight: "100vh", background: "#E9F5F3", pt: 10, pb: 6, mt: 6 }}
+      sx={{ minHeight: "100vh", bgcolor: "background.default", pt: 10, pb: 6, mt: 6 }}
     >
       <Container maxWidth="xl">
         {/* Header */}
@@ -45,18 +45,28 @@ const Recents = ({
           sx={{
             mb: 5,
             p: 4,
-            background: "linear-gradient(135deg, #667eea, #764ba2)",
-            color: "#fff",
-            borderRadius: 4,
+            bgcolor: "secondary.main",
+            color: "secondary.contrastText",
+            borderRadius: 0,
+            boxShadow: (theme) => `0 20px 25px -5px ${theme.palette.secondary.light}30`
           }}
         >
-          <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
-            <History sx={{ fontSize: 40 }} />
+          <Box sx={{ display: "flex", alignItems: "center", gap: 3 }}>
+            <Box
+              sx={{
+                bgcolor: 'rgba(255,255,255,0.2)',
+                p: 2,
+                borderRadius: 0,
+                display: 'flex'
+              }}
+            >
+              <History sx={{ fontSize: 40 }} />
+            </Box>
             <Box>
               <Typography variant="h4" fontWeight="bold">
                 Recently Viewed Playlists
               </Typography>
-              <Typography sx={{ opacity: 0.9, mt: 1 }}>
+              <Typography sx={{ opacity: 0.9, mt: 0.5, fontSize: '1.1rem' }}>
                 {recentsToDisplay.length} playlist{recentsToDisplay.length !== 1 ? "s" : ""}{" "}
                 in your recent history
               </Typography>
@@ -66,7 +76,7 @@ const Recents = ({
 
         {/* Recents Grid */}
         {recentsToDisplay.length > 0 ? (
-          <Grid container spacing={3} sx={{ mt: 4, mb: 5 }}>
+          <Grid container spacing={3} sx={{ mt: 1, mb: 5 }}>
             {recentsToDisplay.map((item) => {
               // Filter out undefined items
               if (!item || !item.playlistId) return null;
@@ -95,12 +105,12 @@ const Recents = ({
             })}
           </Grid>
         ) : (
-          <Box sx={{ textAlign: "center", py: 8 }}>
-            <History sx={{ fontSize: 80, color: "#667eea", opacity: 0.3, mb: 2 }} />
-            <Typography variant="h5" color="text.secondary" fontWeight="bold">
+          <Box sx={{ textAlign: "center", py: 12, bgcolor: 'background.paper', borderRadius: 0, border: '1px dashed', borderColor: 'divider' }}>
+            <History sx={{ fontSize: 80, color: "secondary.light", opacity: 0.2, mb: 2 }} />
+            <Typography variant="h5" color="text.primary" fontWeight="bold">
               No Recent Playlists
             </Typography>
-            <Typography variant="body1" color="text.secondary" sx={{ mt: 2 }}>
+            <Typography variant="body1" color="text.secondary" sx={{ mt: 1 }}>
               Start viewing playlists to see them in your recent history!
             </Typography>
           </Box>
@@ -108,6 +118,7 @@ const Recents = ({
       </Container>
     </Box>
   );
+
 };
 
 // Defining props

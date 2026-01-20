@@ -99,7 +99,7 @@ const Home = ({ getPlaylistById, playlistArray, favoritesIds = [], removePlaylis
 
   return (
     <Box
-      sx={{ minHeight: "100vh", background: "#E9F5F3", pt: 10, pb: 6, mt: 6 }}
+      sx={{ minHeight: "100vh", bgcolor: "background.default", pt: 10, pb: 6, mt: 6 }}
     >
       <Container maxWidth="xl">
         {/* ================= HERO ================= */}
@@ -107,18 +107,19 @@ const Home = ({ getPlaylistById, playlistArray, favoritesIds = [], removePlaylis
           sx={{
             mb: 5,
             p: 4,
-            background: "linear-gradient(135deg, #11998e, #38ef7d)",
-            color: "#fff",
+            bgcolor: "primary.main",
+            color: "primary.contrastText",
             borderRadius: 4,
+            boxShadow: (theme) => `0 20px 25px -5px ${theme.palette.primary.light}20`
           }}
         >
           <Grid container spacing={3} alignItems="center">
             <Grid item xs={12} md={8}>
-              <Typography variant="h5" fontWeight="bold">
+              <Typography variant="h4" fontWeight="bold">
                 Manage your YouTube the smart way 🎯
               </Typography>
 
-              <Typography sx={{ opacity: 0.9, mt: 1 }}>
+              <Typography sx={{ opacity: 0.9, mt: 1, fontSize: "1.1rem" }}>
                 Save playlists, remove distractions and track learning
                 productivity.
               </Typography>
@@ -131,10 +132,10 @@ const Home = ({ getPlaylistById, playlistArray, favoritesIds = [], removePlaylis
                   startIcon={<AddCircleOutline />}
                   onClick={() => setFormOpen((prev) => !prev)}
                   sx={{
-                    background: "#fff",
-                    color: "#11998e",
+                    bgcolor: "common.white",
+                    color: "primary.main",
                     fontWeight: "bold",
-                    "&:hover": { background: "#e0f7f4" },
+                    "&:hover": { bgcolor: "grey.100" },
                   }}
                 >
                   Add Playlist
@@ -145,11 +146,11 @@ const Home = ({ getPlaylistById, playlistArray, favoritesIds = [], removePlaylis
                   startIcon={<Settings />}
                   onClick={() => setTagDialogOpen(true)}
                   sx={{
-                    borderColor: "#fff",
-                    color: "#fff",
+                    borderColor: "rgba(255,255,255,0.5)",
+                    color: "inherit",
                     "&:hover": {
-                      background: "rgba(255,255,255,0.15)",
-                      borderColor: "#fff",
+                      bgcolor: "rgba(255,255,255,0.1)",
+                      borderColor: "common.white",
                     },
                   }}
                 >
@@ -180,8 +181,9 @@ const Home = ({ getPlaylistById, playlistArray, favoritesIds = [], removePlaylis
               value={search}
               onChange={(e) => setSearch(e.target.value)}
               InputProps={{
-                startAdornment: <Search sx={{ mr: 1, color: "#11998e" }} />,
+                startAdornment: <Search sx={{ mr: 1, color: "primary.main" }} />,
               }}
+              sx={{ flex: 1 }}
             />
 
             <Stack
@@ -193,25 +195,19 @@ const Home = ({ getPlaylistById, playlistArray, favoritesIds = [], removePlaylis
               <Typography variant="body2" fontWeight="bold" color="text.secondary">Tags:</Typography>
               <Chip
                 label="All"
+                variant={activeCategory === "All" ? "filled" : "outlined"}
+                color={activeCategory === "All" ? "primary" : "default"}
                 onClick={() => setActiveCategory("All")}
-                sx={{
-                  px: 2,
-                  fontWeight: 600,
-                  background: activeCategory === "All" ? "#11998e" : "#e6f6f3",
-                  color: activeCategory === "All" ? "#fff" : "#11998e",
-                }}
+                sx={{ px: 1 }}
               />
               {tags.map((cat) => (
                 <Chip
                   key={cat}
                   label={cat}
+                  variant={activeCategory === cat ? "filled" : "outlined"}
+                  color={activeCategory === cat ? "primary" : "default"}
                   onClick={() => setActiveCategory(cat)}
-                  sx={{
-                    px: 2,
-                    fontWeight: 600,
-                    background: activeCategory === cat ? "#11998e" : "#e6f6f3",
-                    color: activeCategory === cat ? "#fff" : "#11998e",
-                  }}
+                  sx={{ px: 1 }}
                 />
               ))}
             </Stack>
@@ -225,7 +221,7 @@ const Home = ({ getPlaylistById, playlistArray, favoritesIds = [], removePlaylis
               title="Playlists"
               value={playlistArray.length}
               icon={<PlaylistPlay />}
-              color="#11998e"
+              color="primary.main"
             />
           </Grid>
 
@@ -234,7 +230,7 @@ const Home = ({ getPlaylistById, playlistArray, favoritesIds = [], removePlaylis
               title="Favorites"
               value={favoritesIds.length}
               icon={<Favorite />}
-              color="#ff7675"
+              color="error.main"
             />
           </Grid>
 
@@ -243,7 +239,7 @@ const Home = ({ getPlaylistById, playlistArray, favoritesIds = [], removePlaylis
               title="Recents"
               value="24"
               icon={<History />}
-              color="#6c5ce7"
+              color="secondary.main"
             />
           </Grid>
         </Grid>
@@ -251,11 +247,8 @@ const Home = ({ getPlaylistById, playlistArray, favoritesIds = [], removePlaylis
         {/* Playlists are renderd from here */}
 
         {filteredPlaylists.length > 0 ? (
-          <Grid container spacing={3} sx={{ mt: 4, mb: 5 }}>
+          <Grid container spacing={3} sx={{ mt: 1, mb: 5 }}>
             {filteredPlaylists.map((item) => {
-              const watched = watchedVideos[item.playlistId] || [];
-              const total = item.playlistItems?.length || 0;
-
               return (
                 <Grid
                   key={item.playlistId}
@@ -293,8 +286,8 @@ const Home = ({ getPlaylistById, playlistArray, favoritesIds = [], removePlaylis
         )}
 
         {/* ================= RECENT ACTIVITY ================= */}
-        <Card sx={{ p: 3, borderRadius: 3 }}>
-          <Typography fontWeight="bold" mb={2}>
+        <Card sx={{ p: 4, borderRadius: 3, mb: 6 }}>
+          <Typography variant="h6" fontWeight="bold" mb={3}>
             Recent Activity
           </Typography>
 
@@ -304,14 +297,17 @@ const Home = ({ getPlaylistById, playlistArray, favoritesIds = [], removePlaylis
                 <RecentActivityCard key={i} title={item.playlistTitle} />
               )
             )}
+            {playlistArray.length === 0 && (
+              <Typography color="text.secondary">No recent activity</Typography>
+            )}
           </Stack>
         </Card>
 
         {/* Tag Management Dialog */}
         <Dialog open={tagDialogOpen} onClose={() => setTagDialogOpen(false)} fullWidth maxWidth="xs">
-          <DialogTitle>Manage Custom Tags</DialogTitle>
+          <DialogTitle sx={{ fontWeight: 800 }}>Manage Custom Tags</DialogTitle>
           <DialogContent>
-            <Stack direction="row" spacing={1} sx={{ mt: 2, mb: 3 }}>
+            <Stack direction="row" spacing={1} sx={{ mt: 1, mb: 3 }}>
               <TextField
                 size="small"
                 fullWidth
@@ -319,32 +315,33 @@ const Home = ({ getPlaylistById, playlistArray, favoritesIds = [], removePlaylis
                 value={newTag}
                 onChange={(e) => setNewTag(e.target.value)}
               />
-              <Button variant="contained" onClick={handleAddTag} sx={{ background: "#11998e" }}>
+              <Button variant="contained" onClick={handleAddTag}>
                 Add
               </Button>
             </Stack>
-            <Typography variant="subtitle2" gutterBottom>Existing Tags:</Typography>
+            <Typography variant="subtitle2" gutterBottom fontWeight="bold">Existing Tags:</Typography>
             <Stack direction="row" spacing={1} useFlexGap sx={{ flexWrap: "wrap" }}>
               {tags.map((tag) => (
                 <Chip
                   key={tag}
                   label={tag}
                   onDelete={() => removeTag(tag)}
-                  color="primary"
+                  color="secondary"
                   variant="outlined"
-                  sx={{ borderColor: "#11998e", color: "#11998e" }}
+                  size="small"
                 />
               ))}
             </Stack>
           </DialogContent>
-          <DialogActions>
-            <Button onClick={() => setTagDialogOpen(false)}>Close</Button>
+          <DialogActions sx={{ p: 3 }}>
+            <Button variant="outlined" color="inherit" onClick={() => setTagDialogOpen(false)}>Close</Button>
           </DialogActions>
         </Dialog>
       </Container>
     </Box>
   );
 };
+
 
 
 //defining props

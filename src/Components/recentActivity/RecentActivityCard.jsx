@@ -9,18 +9,34 @@ const RecentActivityCard = ({ title }) => {
         display: "flex",
         justifyContent: "space-between",
         alignItems: "center",
-        boxShadow: 0,
-        background: "#d5e5e5",
-        borderRadius: 2,
+        boxShadow: "none",
+        bgcolor: "grey.50",
+        borderRadius: 0,
+        border: "1px solid",
+
+        borderColor: "divider",
+        "&:hover": {
+          bgcolor: "white",
+          borderColor: "primary.light"
+        }
       }}
     >
-      <Typography>{title}</Typography>
-      <Button size="small" sx={{ color: "#11998e", fontWeight: 600 }}>
+      <Typography variant="body2" fontWeight={600} color="text.primary">{title}</Typography>
+      <Button
+        size="small"
+        variant="text"
+        sx={{
+          color: "primary.main",
+          fontWeight: 800,
+          "&:hover": { bgcolor: "primary.lighter" }
+        }}
+      >
         Open
       </Button>
     </Card>
   );
 };
+
 
 //defining proptypes
 RecentActivityCard.propTypes = {

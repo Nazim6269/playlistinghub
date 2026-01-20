@@ -36,17 +36,23 @@ const PlaylistForm = ({ open, handleClose, getPlaylistById }) => {
           margin="dense"
           label="Playlist id or Link"
           fullWidth
-          variant="standard"
+          variant="outlined"
           onChange={(e) => setState(e.target.value)}
+          sx={{ mt: 2, "& .MuiOutlinedInput-root": { borderRadius: 0 } }}
         />
       </DialogContent>
 
-      <DialogActions>
-        <Button onClick={handleClose}>Cancel</Button>
-        <Button type="submit" onClick={handleSubmit}>
-          Add Plalist
+      <DialogActions sx={{ p: 2 }}>
+        <Button onClick={handleClose} sx={{ color: "text.secondary" }}>Cancel</Button>
+        <Button
+          variant="contained"
+          onClick={handleSubmit}
+          sx={{ borderRadius: 0 }}
+        >
+          Add Playlist
         </Button>
       </DialogActions>
+
     </Dialog>
   );
 };

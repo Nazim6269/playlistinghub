@@ -28,7 +28,7 @@ const Favorites = ({
 
   return (
     <Box
-      sx={{ minHeight: "100vh", background: "#E9F5F3", pt: 10, pb: 6, mt: 6 }}
+      sx={{ minHeight: "100vh", bgcolor: "background.default", pt: 10, pb: 6, mt: 6 }}
     >
       <Container maxWidth="xl">
         {/* Header */}
@@ -36,18 +36,28 @@ const Favorites = ({
           sx={{
             mb: 5,
             p: 4,
-            background: "linear-gradient(135deg, #ff7675, #ff6b81)",
-            color: "#fff",
+            bgcolor: "error.main",
+            color: "error.contrastText",
             borderRadius: 4,
+            boxShadow: (theme) => `0 20px 25px -5px ${theme.palette.error.light}30`
           }}
         >
-          <Box sx={{ display: "flex", alignItems: "center", gap: 2 }}>
-            <Favorite sx={{ fontSize: 40 }} />
+          <Box sx={{ display: "flex", alignItems: "center", gap: 3 }}>
+            <Box
+              sx={{
+                bgcolor: 'rgba(255,255,255,0.2)',
+                p: 2,
+                borderRadius: 3,
+                display: 'flex'
+              }}
+            >
+              <Favorite sx={{ fontSize: 40 }} />
+            </Box>
             <Box>
               <Typography variant="h4" fontWeight="bold">
                 My Favorite Playlists
               </Typography>
-              <Typography sx={{ opacity: 0.9, mt: 1 }}>
+              <Typography sx={{ opacity: 0.9, mt: 0.5, fontSize: '1.1rem' }}>
                 {favorites.length} playlist{favorites.length !== 1 ? "s" : ""}{" "}
                 saved as favorites
               </Typography>
@@ -57,7 +67,7 @@ const Favorites = ({
 
         {/* Favorites Grid */}
         {favorites.length > 0 ? (
-          <Grid container spacing={3} sx={{ mt: 4, mb: 5 }}>
+          <Grid container spacing={3} sx={{ mt: 1, mb: 5 }}>
             {favorites.map((item) => {
               // Filter out undefined items
               if (!item || !item.playlistId) return null;
@@ -86,12 +96,12 @@ const Favorites = ({
             })}
           </Grid>
         ) : (
-          <Box sx={{ textAlign: "center", py: 8 }}>
-            <Favorite sx={{ fontSize: 80, color: "#ff7675", opacity: 0.3, mb: 2 }} />
-            <Typography variant="h5" color="text.secondary" fontWeight="bold">
+          <Box sx={{ textAlign: "center", py: 12, bgcolor: 'background.paper', borderRadius: 4, border: '1px dashed', borderColor: 'divider' }}>
+            <Favorite sx={{ fontSize: 80, color: "error.light", opacity: 0.2, mb: 2 }} />
+            <Typography variant="h5" color="text.primary" fontWeight="bold">
               No Favorites Yet
             </Typography>
-            <Typography variant="body1" color="text.secondary" sx={{ mt: 2 }}>
+            <Typography variant="body1" color="text.secondary" sx={{ mt: 1 }}>
               Start adding playlists to your favorites to see them here!
             </Typography>
           </Box>
@@ -100,6 +110,7 @@ const Favorites = ({
     </Box>
   );
 };
+
 
 //defining props
 Favorites.propTypes = {

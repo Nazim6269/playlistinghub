@@ -7,10 +7,13 @@ const Footer = () => {
       sx={{
         mt: 8,
         py: 6,
-        background: "linear-gradient(90deg, #11998e, #38ef7d)",
-        color: "#fff",
+        bgcolor: "primary.main",
+        color: "primary.contrastText",
+        borderTop: "1px solid",
+        borderColor: "divider",
       }}
     >
+
       <Container maxWidth="xl">
         <Stack
           direction={{ xs: "column", sm: "row" }}

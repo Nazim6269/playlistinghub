@@ -59,27 +59,25 @@ const PlaylistCardItem = ({
         flexDirection: "column",
         width: 280,
         m: 1,
-        borderRadius: 3,
-        transition: "0.3s",
-        boxShadow: "0 6px 15px rgba(0,0,0,0.08)",
+        borderRadius: 0,
+        overflow: 'hidden',
+        transition: "0.3s cubic-bezier(0.4, 0, 0.2, 1)",
         "&:hover": {
-          transform: "translateY(-5px)",
-          boxShadow: "0 12px 25px rgba(0,0,0,0.15)",
+          transform: "translateY(-8px)",
+          boxShadow: (theme) => `0 20px 25px -5px ${theme.palette.grey[400]}40`,
         },
       }}
     >
       {/* Thumbnail */}
-      <Box sx={{ position: "relative" }}>
+      <Box sx={{ position: "relative", height: 160 }}>
         <CardMedia
           component="img"
           image={playlistThumb.url}
           alt={playlistTitle}
           sx={{
             width: "100%",
-            height: 180,
+            height: "100%",
             objectFit: "cover",
-            borderTopLeftRadius: 12,
-            borderTopRightRadius: 12,
           }}
         />
         {/* Progress Bar Overlay */}
@@ -88,10 +86,10 @@ const PlaylistCardItem = ({
             variant="determinate"
             value={progress}
             sx={{
-              height: 6,
-              backgroundColor: "rgba(255,255,255,0.3)",
+              height: 4,
+              backgroundColor: "rgba(0,0,0,0.1)",
               "& .MuiLinearProgress-bar": {
-                backgroundColor: "#38ef7d"
+                backgroundColor: progress === 100 ? "success.main" : "primary.main"
               }
             }}
           />
@@ -99,39 +97,51 @@ const PlaylistCardItem = ({
       </Box>
 
       {/* Content */}
-      <CardContent sx={{ pb: 1 }}>
-        <Typography variant="h6" color="text.primary" noWrap>
-          {playlistTitle.length > 40
-            ? playlistTitle.substr(0, 40) + "..."
-            : playlistTitle}
+      <CardContent sx={{ pb: 1, flexGrow: 1 }}>
+        <Typography
+          variant="subtitle1"
+          fontWeight={800}
+          color="text.primary"
+          sx={{
+            lineHeight: 1.2,
+            display: "-webkit-box",
+            WebkitLineClamp: 2,
+            WebkitBoxOrient: "vertical",
+            overflow: "hidden",
+            mb: 1
+          }}
+        >
+          {playlistTitle}
         </Typography>
-        <Typography variant="body2" color="text.secondary">
+        <Typography variant="caption" color="text.secondary" fontWeight={600}>
           {channelTitle}
         </Typography>
 
         {/* Progress Text */}
-        <Typography variant="caption" sx={{ mt: 1, display: "block", fontWeight: "bold", color: "#11998e" }}>
+        <Typography variant="caption" sx={{ mt: 1, display: "block", fontWeight: 700, color: progress === 100 ? "success.main" : "primary.main" }}>
           {watchedCount}/{totalCount} videos completed
         </Typography>
 
         {/* Tags */}
-        <Stack direction="row" spacing={0.5} sx={{ mt: 1, flexWrap: "wrap", gap: 0.5 }}>
+        <Stack direction="row" spacing={0.5} sx={{ mt: 2, flexWrap: "wrap", gap: 0.5 }}>
           {assignedTags.map(tag => (
             <Chip
               key={tag}
               label={tag}
               size="small"
               onDelete={() => onRemoveTag(tag)}
-              sx={{ fontSize: "0.65rem", height: 20 }}
+              color="secondary"
+              variant="outlined"
+              sx={{ fontSize: "0.65rem", height: 22, fontWeight: 600 }}
             />
           ))}
           <Chip
-            icon={<Add sx={{ fontSize: "1rem !important" }} />}
+            icon={<Add sx={{ fontSize: "0.9rem !important" }} />}
             label="Tag"
             size="small"
             onClick={handleClick}
             variant="outlined"
-            sx={{ fontSize: "0.65rem", height: 20, cursor: "pointer" }}
+            sx={{ fontSize: "0.65rem", height: 22, cursor: "pointer", borderStyle: 'dashed' }}
           />
         </Stack>
 
@@ -151,8 +161,6 @@ const PlaylistCardItem = ({
         </Menu>
       </CardContent>
 
-      <Box sx={{ flexGrow: 1 }} />
-
       {/* Actions */}
       <CardActions
         disableSpacing
@@ -161,84 +169,57 @@ const PlaylistCardItem = ({
           pb: 2,
           display: "flex",
           flexDirection: "column",
-          gap: 1,
+          gap: 1.5,
         }}
       >
-        {/* Start Tutorial */}
         <Button
           to={`/player/${playlistId}`}
           component={Link}
           onClick={() => onView?.(playlistId)}
           fullWidth
-          sx={{
-            textTransform: "none",
-            fontWeight: 600,
-            color: "#fff",
-            background: "linear-gradient(135deg, #11998e, #38ef7d)",
-            borderRadius: 3,
-            "&:hover": {
-              opacity: 0.9,
-            },
-            minWidth: 0,
-          }}
+          variant="contained"
+          color="primary"
+          startIcon={<PlayCircleFilledOutlined />}
+          sx={{ borderRadius: 0, py: 1, boxShadow: 'none' }}
         >
-          <Stack
-            direction="row"
-            alignItems="center"
-            gap={1}
-            justifyContent="center"
-          >
-            <PlayCircleFilledOutlined />
-            <Typography variant="body2" fontWeight={600}>
-              Start Tutorial
-            </Typography>
-          </Stack>
+
+          Start Tutorial
         </Button>
 
         <Stack direction="row" spacing={1} sx={{ width: "100%" }}>
-          {/* Favorite */}
           <Button
             onClick={onFavorite}
+            variant="outlined"
+            color={isFavorite ? "error" : "primary"}
             sx={{
               flex: 1,
-              textTransform: "none",
-              fontWeight: 600,
-              color: isFavorite ? "#ff6b81" : "#ff6b81",
-              borderRadius: 3,
-              border: "1px solid #ff6b81",
-              background: isFavorite ? "rgba(255,107,129,0.1)" : "transparent",
-              "&:hover": {
-                background: "rgba(255,107,129,0.15)",
-              },
+              borderRadius: 0,
               minWidth: 0,
+              bgcolor: isFavorite ? 'error.lighter' : 'transparent',
             }}
           >
             {isFavorite ? <Favorite fontSize="small" /> : <FavoriteBorderOutlined fontSize="small" />}
           </Button>
 
-          {/* Remove */}
           <Button
             onClick={onRemove}
+            variant="outlined"
+            color="inherit"
             sx={{
               flex: 1,
-              textTransform: "none",
-              fontWeight: 600,
-              color: "#ff3b3b",
-              borderRadius: 3,
-              border: "1px solid #ff3b3b",
-              "&:hover": {
-                background: "rgba(255,59,59,0.08)",
-              },
+              borderRadius: 0,
               minWidth: 0,
+              color: 'text.secondary',
+              borderColor: 'divider',
+              "&:hover": { borderColor: 'error.main', color: 'error.main' }
             }}
           >
             <DeleteOutline fontSize="small" />
           </Button>
         </Stack>
       </CardActions>
-    </Card>
+    </Card >
   );
 };
 
 export default PlaylistCardItem;
-
