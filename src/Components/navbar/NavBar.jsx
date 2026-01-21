@@ -24,7 +24,7 @@ const AppBar = styled(MuiAppBar, {
 // Styled NavLink for Desktop
 const MenuLink = styled(NavLink)(({ theme }) => ({
   padding: "8px 16px",
-  borderRadius: "8px",
+  borderRadius: "0px",
   textDecoration: "none",
   fontWeight: 600,
   color: theme.palette.primary.contrastText,
@@ -117,7 +117,6 @@ const NavBar = () => {
             <MobileMenuLink to={item.path}>
               <ListItemText
                 primary={item.label}
-                primaryTypographyProps={{ fontWeight: 600 }}
               />
             </MobileMenuLink>
           </ListItem>
